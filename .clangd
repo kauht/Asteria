@@ -1,8 +1,2 @@
 CompileFlags:
-  Add:
-    - -std=c++23
-    - -x
-    - c++
-    - -I.
-    - -Iinclude
-    - -Iasteria/src
+  Add: ["-fno-modules"]

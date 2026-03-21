@@ -11,7 +11,6 @@ set_targetdir("bin/$(mode)")
 target("asteria")
     set_kind("shared")
     add_files("src/asteria/**.cpp")
-    add_cxxflags("-fmodules", { force = true })
 
 target("injector")
     set_kind("binary")
