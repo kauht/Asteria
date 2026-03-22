@@ -1,3 +1,4 @@
+#ifndef _WIN32
 #include <dlfcn.h>
 #include <print>
 #include <filesystem>
@@ -5,8 +6,12 @@
 #include <chrono>
 
 namespace fs = std::filesystem;
-
+#endif
 int main() {
+#ifdef _WIN32
+}
+#else
+
     std::println("Loading asteria module...");
     std::string name{};
 
@@ -37,3 +42,4 @@ int main() {
 
     return 0;
 }
+#endif

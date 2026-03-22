@@ -9,9 +9,15 @@ add_rules("plugin.compile_commands.autoupdate", { outputdir = "build" })
 set_targetdir("bin/$(mode)")
 
 target("asteria")
-    set_kind("shared")
-    add_files("src/asteria/**.cpp")
+set_kind("shared")
+add_files("src/asteria/**.cpp")
+
+if is_plat("windows") then
+    add_includedirs("src/external/minhook/include")
+    add_ldflags("src/external/minhook/lib/libMinHook.x64.lib", "link")
+    add_syslinks("Psapi")
+end
 
 target("injector")
-    set_kind("binary")
-    add_files("src/injector/**.cpp")
+set_kind("binary")
+add_files("src/injector/**.cpp")

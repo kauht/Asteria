@@ -1,37 +1,45 @@
-#include <print>
 #include "util/logger.hpp"
-#include <pthread.h>
+
+#ifdef _WIN32
+#include <windows.h>
 #include <thread>
-#include <unistd.h>
-#include <dlfcn.h>
-#include "util/hook/hook.hpp"
+#endif
 
 using namespace asteria::util;
 
 void entry() {
+    info("Asteria entry()");
 
-}
 
-__attribute__((constructor))
-void init() {
-    std::println("asteria: init() called\n");
-
-    info(std::string("Asteria init() called - pid=") + std::to_string(static_cast<unsigned long>(getpid())) + " module=" + std::to_string(reinterpret_cast<std::uintptr_t>(dlopen(NULL, RTLD_NOW))));
-    info("Asteria Initialized");
-
-    std::thread(entry).detach();
-}
-__attribute__((destructor))
-void exit() {
-    info(std::string("Asteria exit() called"));
 }
 
 #ifdef _WIN32
-#include <windows.h>
-BOOL WINAPI DllMain(HINSTANCE hinst, DWORD reason, LPVOID reserved) {
-    if (reason == DLL_PROCESS_ATTACH) {
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)entry, NULL, 0, NULL);
+
+BOOL WINAPI DllMain(HINSTANCE /*hinst*/, DWORD reason, LPVOID /*reserved*/) {
+    switch (reason) {
+    case DLL_PROCESS_ATTACH:
+        info("Asteria Loaded");
+        std::thread(entry).detach();
+        break;
+    case DLL_PROCESS_DETACH:
+        info("Asteria unloading");
+        break;
+    default:
+        break;
     }
     return TRUE;
 }
+
+#else
+
+__attribute__((constructor))
+static void asteria_start() {
+    info("Asteria Loaded");
+}
+
+__attribute__((destructor))
+static void asteria_end() {
+    info("Asteria unloading");
+}
+
 #endif
