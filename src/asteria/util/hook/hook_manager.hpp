@@ -1,4 +1,6 @@
 #include <vector>
+#include "../../external/minhook/include/MinHook.h"
+#pragma comment(lib, "libMinHook.x64.lib")
 
 namespace asteria::util {
 
