@@ -4,3 +4,4 @@ build/
 bin/
 config/
 reference/
+compile_commands.json

@@ -4,20 +4,21 @@ set_languages("cxx23")
 
 add_rules("mode.debug", "mode.release")
 
--- add_rules("plugin.compile_commands.autoupdate", { outputdir = "build" })
+add_rules("plugin.compile_commands.autoupdate", { outputdir = "." })
 
 set_targetdir("bin/$(mode)")
 
 target("asteria")
 set_kind("shared")
-add_files("src/asteria/**.cpp")
+add_files("apps/asteria/**.cpp")
 
 if is_plat("windows") then
-    add_includedirs("src/asteria/external/minhook/include")
-    add_ldflags("src/asteria/external/minhook/lib/libMinHook.x64.lib", "link")
-    add_syslinks("Psapi")
+    add_includedirs("external/")
+    add_includedirs("external/safetyhook")
+    add_files("external/safetyhook/safetyhook.cpp", "external/safetyhook/Zydis.c")
+    add_syslinks("Psapi", "gdi32")
 end
 
 target("injector")
 set_kind("binary")
-add_files("src/injector/**.cpp")
+add_files("apps/injector/**.cpp")
