@@ -1,110 +1,38 @@
 #pragma once
-#include <string>
+
+#include <format>
 #include <fstream>
-#include <chrono>
-#include <iomanip>
 #include <mutex>
-#include <filesystem>
-#include <sstream>
-#include <ctime>
+#include <string_view>
+#include <chrono>
 
 namespace asteria::util {
 
-enum class log_level : int { OFF = 0, ERROR = 1, INFO = 2, DEBUG = 3 };
-
+// Simple file logger. Thread-safe. Writes to asteria.log in the working directory.
 class logger {
-public:
-    logger() : path_("asteria.log") {
-        file_.open(path_, std::ios::out | std::ios::trunc);
-    }
-
-    logger(const std::string& path, log_level level = log_level::INFO) {
-        path_ = path;
-        file_.open(path_, std::ios::out | std::ios::trunc);
-    }
-
+  public:
+    logger() { file_.open("asteria.log", std::ios::out | std::ios::trunc); }
     ~logger() {
-        std::lock_guard<std::mutex> lk(mutex_);
-        if (file_.is_open()) {
-            file_.flush();
-            file_.close();
-        }
+        if (file_.is_open()) file_.close();
     }
 
-    bool open(const std::string& path) {
-        std::lock_guard<std::mutex> lk(mutex_);
-
-        path_ = path;
-
-        std::filesystem::path p(path_);
-
-        file_.open(path_, std::ios::out | std::ios::trunc);
-
-        if (!file_.is_open()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    void close() {
-        std::lock_guard<std::mutex> lk(mutex_);
-        if (file_.is_open()) {
-            file_.close();
-        }
-    }
-
-    bool is_open() const {
-        std::lock_guard<std::mutex> lk(mutex_);
-        return file_.is_open();
-    }
-
-    void write(const std::string& msg, log_level level) {
-        std::lock_guard<std::mutex> lk(mutex_);
-        if (level == log_level::OFF) {
-            return;
-        }
-
-        if (!file_.is_open()) {
-            return;
-        }
-
-        file_ << '[' << timestamp_locked() << "] ";
-        file_ << '[' << level_to_string(level) << "] ";
-        file_ << msg << '\n';
+    void write(std::string_view msg, std::string_view level) {
+        std::lock_guard lock(mutex_);
+        if (!file_.is_open()) return;
+        file_ << std::format("[{}] [{}] {}\n", timestamp(), level, msg);
         file_.flush();
     }
 
-private:
+  private:
     std::ofstream file_;
-    std::string path_;
     mutable std::mutex mutex_;
 
-    static const char* level_to_string(log_level lvl) {
-        switch (lvl) {
-            case log_level::ERROR: return "ERROR";
-            case log_level::INFO:  return "INFO";
-            case log_level::DEBUG: return "DEBUG";
-            case log_level::OFF:   return "OFF";
-            default:               return "UNKNOWN";
-        }
-    }
-
-    static std::string timestamp_locked() {
-        using namespace std::chrono;
-        auto now = system_clock::now();
-        std::time_t t = system_clock::to_time_t(now);
-
+    static std::string timestamp() {
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
         std::tm tm{};
-#ifdef _WIN32
-        localtime_s(&tm, &t);
-#else
-        localtime_r(&t, &tm);
-#endif
-
-        std::ostringstream ss;
-        ss << std::put_time(&tm, "%H:%M:%S");
-        return ss.str();
+        localtime_s(&tm, &time);
+        return std::format("{:02}:{:02}:{:02}", tm.tm_hour, tm.tm_min, tm.tm_sec);
     }
 };
 
@@ -113,9 +41,12 @@ inline logger& global_logger() {
     return instance;
 }
 
+inline void info(std::string_view msg) { global_logger().write(msg, "INFO"); }
+inline void debug(std::string_view msg) { global_logger().write(msg, "DEBUG"); }
+inline void error(std::string_view msg) { global_logger().write(msg, "ERROR"); }
 
-inline void info(const std::string& msg)  { global_logger().write(msg, log_level::INFO);  }
-inline void debug(const std::string& msg) { global_logger().write(msg, log_level::DEBUG); }
-inline void error(const std::string& msg) { global_logger().write(msg, log_level::ERROR); }
+// Convenience: log a formatted message directly.
+// Usage: asteria::util::log("value = {}", 42);
+template <typename... Args> inline void log(std::format_string<Args...> fmt, Args&&... args) { info(std::format(fmt, std::forward<Args>(args)...)); }
 
 } // namespace asteria::util

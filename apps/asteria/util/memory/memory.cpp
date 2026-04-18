@@ -1,63 +1,60 @@
 #include "memory.hpp"
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
 #include <Psapi.h>
-#include <Windows.h>
+
 #include <vector>
+#include <string_view>
 
 namespace asteria::util {
 
-std::vector<std::pair<uint8_t, bool>> pattern_to_bytes(const std::string& pattern) {
-    std::vector<std::pair<uint8_t, bool>> pattern_bytes;
-    const char* start = pattern.c_str();
-    const char* end = start + pattern.size();
+uintptr_t find_pattern(std::string_view pattern, std::string_view module_name) {
+    HMODULE mod = GetModuleHandleA(module_name.data());
+    if (!mod) return 0;
 
-    for (const char* current = start; current < end; ++current) {
-        if (*current == ' ')
+    MODULEINFO info{};
+    GetModuleInformation(GetCurrentProcess(), mod, &info, sizeof(info));
+
+    auto* base = reinterpret_cast<const uint8_t*>(info.lpBaseOfDll);
+    size_t size = info.SizeOfImage;
+
+    // Parse pattern string into (byte, is_wildcard) pairs
+    struct byte_entry {
+        uint8_t value;
+        bool wildcard;
+    };
+    std::vector<byte_entry> bytes;
+    bytes.reserve(32);
+
+    for (size_t i = 0; i < pattern.size();) {
+        if (pattern[i] == ' ') {
+            ++i;
             continue;
-        if (*current == '?') {
-            pattern_bytes.emplace_back(0, false);
-            if (*(current + 1) == '?')
-                ++current;
+        }
+        if (pattern[i] == '?') {
+            bytes.push_back({0, true});
+            // '?' and '??' are both valid wildcards — skip one or two chars
+            bool double_wildcard = (i + 1 < pattern.size() && pattern[i + 1] == '?');
+            i += double_wildcard ? 2 : 1;
         } else {
-            pattern_bytes.emplace_back(strtoul(current, nullptr, 16), true);
-            if (*(current + 1) != ' ')
-                ++current;
+            uint8_t byte = static_cast<uint8_t>(std::strtoul(pattern.data() + i, nullptr, 16));
+            bytes.push_back({byte, false});
+            i += 2;
         }
     }
 
-    return pattern_bytes;
-}
+    if (bytes.empty() || size < bytes.size()) return 0;
 
-uintptr_t find_pattern(const std::string& pattern, const std::string& module_name) {
-    if (module_name.empty())
-        return 0;
-
-    auto mod = GetModuleHandle(module_name.c_str());
-    if (!mod)
-        return 0;
-
-    MODULEINFO module_info;
-    GetModuleInformation(GetCurrentProcess(), mod, &module_info, sizeof(MODULEINFO));
-
-    size_t moduleSize = module_info.SizeOfImage;
-    uintptr_t module_base = (uintptr_t) module_info.lpBaseOfDll;
-
-    std::vector<std::pair<uint8_t, bool>> pattern_bytes = pattern_to_bytes(pattern);
-    size_t pattern_length = pattern_bytes.size();
-
-    for (size_t i = 0; i < moduleSize - pattern_length; ++i) {
-        bool found = true;
-        for (size_t j = 0; j < pattern_length; ++j) {
-            if (pattern_bytes[j].second && pattern_bytes[j].first != *reinterpret_cast<uint8_t*>(module_base + i + j)) {
-                found = false;
+    for (size_t i = 0; i <= size - bytes.size(); ++i) {
+        bool match = true;
+        for (size_t j = 0; j < bytes.size(); ++j) {
+            if (!bytes[j].wildcard && base[i + j] != bytes[j].value) {
+                match = false;
                 break;
             }
         }
-        if (found) {
-            return module_base + i;
-        }
+        if (match) return reinterpret_cast<uintptr_t>(base + i);
     }
 
     return 0;

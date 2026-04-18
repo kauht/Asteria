@@ -1,92 +1,64 @@
-#include "nt.h"
-#include <TlHelp32.h>
 #include <print>
-#include <string>
+#include <windows.h>
+#include <TlHelp32.h>
 
 class Injector {
   public:
-    Injector(std::string name) : process_name(name) {}
-    ~Injector() {
-        if (process_handle) {
-            NtClose(process_handle);
-        }
-    }
 
-    void inject(std::wstring module_path) {
-        set_pid();
-        std::println("{} PID: {}", process_name, process_id);
-        if (!process_id) {
-            std::println("Process not found!");
-            return;
-        }
-        if (module_path.empty()) {
-            std::println("Module path is empty!");
-            return;
-        }
-        // process_handle = OpenProcess(PROCESS_ALL_ACCESS, 0, process_id);
-        CLIENT_ID id{};
-        id.UniqueProcess = reinterpret_cast<HANDLE>(process_id);
-        OBJECT_ATTRIBUTES obj_attr{};
-        obj_attr.Length = sizeof(OBJECT_ATTRIBUTES);
-        long error = NtOpenProcess(&process_handle, PROCESS_ALL_ACCESS, &obj_attr, &id);
-        std::println("{}", error);
-        // LPVOID path_ptr = VirtualAllocEx(process_handle, 0, module_path.size(), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-        LPVOID path_ptr{};
-        SIZE_T size = module_path.size();
-        if (!size) {
-            std::println("Module path is empty!");
-        }
-        long status = NtAllocateVirtualMemory(process_handle, &path_ptr, 0, &size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-        if (status != STATUS_SUCCESS) {
-            std::println("Failed to allocate memory in target process!\n Error: {}", status);
-        }
-        status = NtWriteVirtualMemory(process_handle, path_ptr, module_path.data(), module_path.size(), 0);
-        if (status != STATUS_SUCCESS) {
-            std::println("Failed to write to target process memory!\n Error: {}", status);
-        }
+  Injector(const std::string& name) noexcept : m_process_name(name) {
+      if (!set_pid()) {
+          std::println("Couldn't find process {}", m_process_name);
+          return;
+      }
+      m_process = OpenProcess(PROCESS_ALL_ACCESS, 0, m_pid);
+  }
+  ~Injector() {
+      if (m_process) {
+          CloseHandle(m_process);
+      }
+  }
 
-        // HANDLE thread = CreateRemoteThreadEx(process_handle, 0, 0,
-        // (LPTHREAD_START_ROUTINE)LoadLibraryA, path_ptr, 0, 0, 0);
+  void inject(const std::string& dll_path) {
+      auto* addr = VirtualAllocEx(m_process, 0, dll_path.size()+1, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 
-        OBJECT_ATTRIBUTES thread_obj_attr{};
-        thread_obj_attr.Length = sizeof(OBJECT_ATTRIBUTES);
-        HANDLE thread{};
-        status = NtCreateThreadEx(&thread, THREAD_ALL_ACCESS, &thread_obj_attr, process_handle, (PUSER_THREAD_START_ROUTINE) load_lib, path_ptr, 0, 0, 0, 0, 0);
-        if (status != STATUS_SUCCESS) {
-            std::println("Failed to create remote thread!\n Error: {}", status);
-        }
+      if (!WriteProcessMemory(m_process, addr, dll_path.c_str(), dll_path.size()+1, nullptr)) {
+          std::println("WriteProcessMemory Failed because: {}", GetLastError());
+          return;
+      }
 
-        LdrUnloadDll(thread);
-        if (thread) {
-            NtWaitForSingleObject(thread, 0, PLARGE_INTEGER(MAXLONG));
-            NtClose(thread);
-        }
-        NtFreeVirtualMemory(process_handle, &path_ptr, 0, MEM_RELEASE);
+      HANDLE a = CreateRemoteThreadEx(m_process, 0, 0, (LPTHREAD_START_ROUTINE)LoadLibraryA, addr, 0, 0, 0);
 
-    }
+  }
 
   private:
-    void set_pid() {
-        HANDLE hsnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-        PROCESSENTRY32 pe{};
-        pe.dwSize = sizeof(PROCESSENTRY32);
-        if (Process32First(hsnap, &pe)) {
-            do {
-                if (process_name.compare(pe.szExeFile) == 0) {
-                    process_id = pe.th32ProcessID;
-                    break;
-                }
-            } while (Process32Next(hsnap, &pe));
-        }
-    }
-    std::string process_name{};
-    DWORD process_id{};
-    HANDLE process_handle{};
+  bool set_pid() noexcept {
+      auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+      PROCESSENTRY32 pe{};
+      pe.dwSize = sizeof(PROCESSENTRY32);
+
+      if (Process32First(snapshot, &pe)) {
+          do {
+              if (m_process_name == pe.szExeFile) {
+                  m_pid = pe.th32ProcessID;
+                  CloseHandle(snapshot);
+                  return true;
+              }
+          } while(Process32Next(snapshot, &pe));
+      }
+      CloseHandle(snapshot);
+      return false;
+
+  }
+  std::string m_process_name;
+  DWORD m_pid;
+  HANDLE m_process;
+
 };
 
-auto main() -> int {
-    Injector injector("Zed.exe");
-    injector.inject(L"C:\\Users\\0\\Downloads\\msg.dll");
 
-    return 0;
+auto main() -> int {
+    Injector injector("cs2.exe");
+    injector.inject("C:\\Users\\macin\\Desktop\\Asteria\\bin\\release\\asteria.dll");
+    // injector.inject("C:\\Users\\macin\\Desktop\\Asteria\\bin\\release\\asteria.dll");
 }

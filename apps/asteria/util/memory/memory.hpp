@@ -1,10 +1,13 @@
 #pragma once
-#include <vector>
-#include <string>
+
+#include <cstdint>
+#include <string_view>
 
 namespace asteria::util {
 
-    std::vector<std::pair<uint8_t, bool>> pattern_to_bytes(const std::string& pattern);
+// Scans a loaded module for a byte pattern. Wildcards are represented as '?'.
+// Returns the address of the first match, or 0 if not found.
+// Example: find_pattern("48 8B 0D ? ? ? ?", "client.dll")
+uintptr_t find_pattern(std::string_view pattern, std::string_view module_name);
 
-    uintptr_t find_pattern(const std::string& pattern, const std::string& module_name);
-}
+} // namespace asteria::util

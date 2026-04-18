@@ -1,47 +1,71 @@
-BasedOnStyle: LLVM
+---
 Language: Cpp
+BasedOnStyle: Microsoft
 
-# Indentation and tabs
+# Indentation
 IndentWidth: 4
 TabWidth: 4
 UseTab: Never
+ContinuationIndentWidth: 4
+IndentCaseLabels: true
+IndentPPDirectives: None
+NamespaceIndentation: None
+
+# Long column limit so function signatures stay on one line
 ColumnLimit: 200
-PointerAlignment: Left
-DerivePointerAlignment: false
+
+# Braces — always attach
 BreakBeforeBraces: Attach
-BraceWrapping:
-  AfterClass: false
-  AfterControlStatement: false
-  AfterEnum: false
-  AfterFunction: false
-  AfterNamespace: false
-  AfterObjCDeclaration: false
-  AfterStruct: false
-  AfterUnion: false
-  BeforeCatch: false
-  BeforeElse: false
-  IndentBraces: false
 
-# Spaces
+# Pointers attach to type
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+
+# Spacing
 SpaceBeforeParens: ControlStatements
-SpacesInParentheses: false
-SpacesInContainerLiterals: true
-SpaceAfterCStyleCast: true
+SpaceAfterCStyleCast: false
 SpaceBeforeAssignmentOperators: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceInEmptyParentheses: false
+SpaceBeforeRangeBasedForLoopColon: true
 
-# Short constructs
-AllowShortIfStatementsOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: Inline
-AllowShortLoopsOnASingleLine: false
+# Short constructs — allow short functions, lambdas, and if statements inline
+AllowShortFunctionsOnASingleLine: All
+AllowShortLambdasOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortBlocksOnASingleLine: Always
 
-# Alignments
+# Parameters — pack together when they must wrap, don't force one-per-line
+BinPackParameters: true
+BinPackArguments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllArgumentsOnNextLine: true
+
+# Only break binary operators when necessary
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+BreakStringLiterals: false
+
+# Alignment
 AlignTrailingComments: true
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false
 AlignAfterOpenBracket: Align
+AlignOperands: Align
 
+# Includes — don't reorder
 SortIncludes: false
-AllowAllParametersOfDeclarationOnNextLine: false
-IndentCaseLabels: true
-ReflowComments: true
+IncludeBlocks: Preserve
+
+# Misc
+ReflowComments: false
+FixNamespaceComments: true
+CompactNamespaces: false
+MaxEmptyLinesToKeep: 1
+---
