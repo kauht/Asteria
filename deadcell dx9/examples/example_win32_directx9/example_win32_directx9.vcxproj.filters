@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{a82cba23-9de0-45c2-b1e3-2eb1666702de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\blur">
+      <UniqueIdentifier>{59dc826a-46c7-41b7-97f8-a0aff03f89c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sources\custom">
+      <UniqueIdentifier>{f255cd71-9566-4116-a71e-98de0c1aa0eb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\backends\imgui_impl_win32.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\backends\imgui_impl_dx9.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="blur.cpp">
+      <Filter>sources\blur</Filter>
+    </ClCompile>
+    <ClCompile Include="custom.cpp">
+      <Filter>sources\custom</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\backends\imgui_impl_win32.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\backends\imgui_impl_dx9.h">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="bytes.hpp">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="blur.hpp">
+      <Filter>sources\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="blur_x.hpp">
+      <Filter>sources\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="blur_y.hpp">
+      <Filter>sources\blur</Filter>
+    </ClInclude>
+    <ClInclude Include="custom.hpp">
+      <Filter>sources\custom</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.txt" />
+    <None Include="..\..\misc\debuggers\imgui.natvis">
+      <Filter>imgui</Filter>
+    </None>
+    <None Include="..\..\misc\debuggers\imgui.natstepfilter">
+      <Filter>imgui</Filter>
+    </None>
+  </ItemGroup>
+</Project>
