@@ -1,0 +1,31 @@
+[
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\config\\config.cpp.obj", "src\\core\\config\\config.cpp"],
+  "file": "src\\core\\config\\config.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\entry.cpp.obj", "src\\entry.cpp"],
+  "file": "src\\entry.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\utils\\input\\input.cpp.obj", "src\\utils\\input\\input.cpp"],
+  "file": "src\\utils\\input\\input.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\utils\\io\\io.cpp.obj", "src\\utils\\io\\io.cpp"],
+  "file": "src\\utils\\io\\io.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\utils\\memory\\memory.cpp.obj", "src\\utils\\memory\\memory.cpp"],
+  "file": "src\\utils\\memory\\memory.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\utils\\modules\\modules.cpp.obj", "src\\utils\\modules\\modules.cpp"],
+  "file": "src\\utils\\modules\\modules.cpp"
+}]

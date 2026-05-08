@@ -1,0 +1,27 @@
+CompileFlags:
+  Add:
+    - --driver-mode=cl
+    - /std:c++latest
+    - -D_HAS_STD_FORMAT=1
+    - -D_HAS_CXX23=1
+    - -Wall
+    - -Wextra
+    - -Wno-c++98-compat
+    - -Wno-c++98-compat-pedantic
+    - -Wunsafe-buffer-usage
+
+  Remove:
+    - -m*
+    - -std=c++23
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
+  Suppress:
+    - c++98-compat
+    - c++98-compat-pedantic
+
+InlayHints:
+  Enabled: true
+  ParameterNames: true
+  DeducedTypes: true
