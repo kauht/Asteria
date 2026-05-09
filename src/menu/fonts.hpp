@@ -1,5 +1,7 @@
 #pragma once
 
+#include <imgui.h>
+
 inline const unsigned char geist_regular[] = {
     0x00, 0x01, 0x00, 0x00, 0x00, 0x12, 0x01, 0x00, 0x00, 0x04, 0x00, 0x20, 0x47, 0x44, 0x45, 0x46,
     0x47, 0x21, 0x40, 0x20, 0x00, 0x01, 0x60, 0xf8, 0x00, 0x00, 0x01, 0x28, 0x47, 0x50, 0x4f, 0x53,
@@ -14034,3 +14036,51 @@ inline const unsigned char geist_medium[] = {
     0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x03, 0x4c, 0x61, 0x74, 0x6e, 0x43, 0x79, 0x72, 0x00,
 };
 
+
+
+// Font size enum
+enum FontSize
+{
+    FONT_TINY = 0,
+    FONT_SMALL,
+    FONT_REGULAR,
+    FONT_MEDIUM,
+    FONT_SEMI_BOLD,
+    FONT_BOLD
+};
+
+// Fonts namespace
+namespace fonts
+{
+    inline ImFont* font_tiny = nullptr;
+    inline ImFont* font_small = nullptr;
+    inline ImFont* font_regular = nullptr;
+    inline ImFont* font_medium = nullptr;
+    inline ImFont* font_semi_bold = nullptr;
+    inline ImFont* font_bold = nullptr;
+
+    inline void init(ImGuiIO& io)
+    {
+        // Load Geist font from embedded byte array at different sizes
+        font_tiny = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 8.0f);
+        font_small = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 11.0f);
+        font_regular = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 13.0f);
+        font_medium = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 10.0f);
+        font_semi_bold = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 14.0f);
+        font_bold = io.Fonts->AddFontFromMemoryTTF((void*)geist_regular, sizeof(geist_regular), 15.0f);
+    }
+
+    inline ImFont* get(FontSize size)
+    {
+        switch (size)
+        {
+            case FONT_TINY: return font_tiny;
+            case FONT_SMALL: return font_small;
+            case FONT_REGULAR: return font_regular;
+            case FONT_MEDIUM: return font_medium;
+            case FONT_SEMI_BOLD: return font_semi_bold;
+            case FONT_BOLD: return font_bold;
+            default: return font_regular;
+        }
+    }
+}

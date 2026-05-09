@@ -9,7 +9,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "fonts.hpp"
+#include "../fonts.hpp"
 
 #define to_vec4(r, g, b, a) ImColor((r) / 255.f, (g) / 255.f, (b) / 255.f, (a))
 

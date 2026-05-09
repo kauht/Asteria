@@ -1,5 +1,5 @@
 #include "ui.hpp"
-#include "fonts.hpp"
+#include "../fonts.hpp"
 
 namespace ui
 {

@@ -1,11 +1,9 @@
 #include "menu.hpp"
 
 #include "ui/ui.hpp"
-#include "ui/fonts.hpp"
+#include "fonts.hpp"
 #include "../rendering/texture.hpp"
-
-// External device from main.cpp
-extern ID3D11Device* g_device_export;
+#include "../hooks/d3d11_hook.hpp"
 
 namespace menu
 {
@@ -19,14 +17,17 @@ namespace menu
     
     static void load_icons()
     {
-        if (g_icons_loaded || !g_device_export) return;
+        if (g_icons_loaded) return;
+        
+        ID3D11Device* device = hooks::d3d11::get_device();
+        if (!device) return;
         
         int w, h;
-        rendering::load_texture_from_file("vendor/crosshair.png", g_device_export, &g_icon_crosshair, &w, &h);
-        rendering::load_texture_from_file("vendor/eye.png", g_device_export, &g_icon_eye, &w, &h);
-        rendering::load_texture_from_file("vendor/palette.png", g_device_export, &g_icon_palette, &w, &h);
-        rendering::load_texture_from_file("vendor/settings.png", g_device_export, &g_icon_settings, &w, &h);
-        rendering::load_texture_from_file("vendor/pfp.png", g_device_export, &g_icon_pfp, &w, &h);
+        rendering::load_texture_from_file("vendor/crosshair.png", device, &g_icon_crosshair, &w, &h);
+        rendering::load_texture_from_file("vendor/eye.png", device, &g_icon_eye, &w, &h);
+        rendering::load_texture_from_file("vendor/palette.png", device, &g_icon_palette, &w, &h);
+        rendering::load_texture_from_file("vendor/settings.png", device, &g_icon_settings, &w, &h);
+        rendering::load_texture_from_file("vendor/pfp.png", device, &g_icon_pfp, &w, &h);
         
         g_icons_loaded = true;
     }
@@ -155,8 +156,8 @@ namespace menu
         const float text_x = profile_x + avatar_size + 8 * dpi_scale;
         
         // Get font heights for proper centering
-        ImFont* small_font = ::ui::fonts::get(FONT_SMALL);
-        ImFont* tiny_font = ::ui::fonts::get(FONT_TINY);
+        ImFont* small_font = fonts::get(FONT_SMALL);
+        ImFont* tiny_font = fonts::get(FONT_TINY);
         
         const float username_height = small_font->LegacySize;
         const float sub_height = tiny_font->LegacySize;
@@ -199,7 +200,7 @@ namespace menu
         const float icon_size = 14 * dpi_scale;
         const float icon_text_gap = 4 * dpi_scale;
         
-        ImGui::PushFont(::ui::fonts::get(FONT_MEDIUM));
+        ImGui::PushFont(fonts::get(FONT_MEDIUM));
         
         float current_x = tabs_start_x;
         
@@ -428,7 +429,7 @@ namespace menu
         
         ImGui::BeginChild("##content", ImVec2(content_width, content_height), true, ImGuiWindowFlags_NoScrollbar);
         
-        ImGui::PushFont(::ui::fonts::get(FONT_REGULAR));
+        ImGui::PushFont(fonts::get(FONT_REGULAR));
         
         // Tab content
         switch (tab)

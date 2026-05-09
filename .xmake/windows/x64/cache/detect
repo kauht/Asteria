@@ -1,28 +1,34 @@
 {
-    ["lib.detect.has_flags"] = {
-        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_cl_sourceDependencies"] = true,
-        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23preview"] = true,
-        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx__-nologo_-O2"] = true,
-        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23"] = false,
-        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-DNDEBUG"] = true
-    },
     find_program_msvc_arch_x64_plat_windows_checktoolcc = {
         ["cl.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\cl.exe]]
     },
-    find_program_msvc_arch_x64_plat_windows_checktoolld = {
-        ["link.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe]]
+    ["detect.sdks.find_dotnet"] = {
+        dotnet = false
     },
     find_program_msvc_arch_x64_plat_windows_checktoolcxx = {
         ["cl.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\cl.exe]]
     },
+    find_program_msvc_arch_x64_plat_windows_checktoolsh = {
+        ["link.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe]]
+    },
+    ["lib.detect.has_flags"] = {
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx__-nologo_-O2"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cc__-nologo_-O2"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23"] = false,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-std:c++23preview"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cc_cxflags_-nologo_cl_sourceDependencies"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cc_cxflags_-nologo_-DNDEBUG"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_cl_sourceDependencies"] = true,
+        ["windows_x64_c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.50.35717\\bin\\hostx64\\x64\\cl.exe__cxx_cxflags_-nologo_-DNDEBUG"] = true
+    },
+    find_program_msvc_arch_x64_plat_windows_checktoolld = {
+        ["link.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\link.exe]]
+    },
     find_program = {
+        nim = false,
         dotnet = false,
         zig = false,
-        ["cl.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\cl.exe]],
-        nim = false,
-        ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe"] = [[c:\program files\microsoft visual studio\18\community\vc\tools\msvc\14.50.35717\bin\hostx64\x64\cl.exe]]
-    },
-    ["detect.sdks.find_dotnet"] = {
-        dotnet = false
+        ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe"] = [[c:\program files\microsoft visual studio\18\community\vc\tools\msvc\14.50.35717\bin\hostx64\x64\cl.exe]],
+        ["cl.exe"] = [[C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\bin\HostX64\x64\cl.exe]]
     }
 }
