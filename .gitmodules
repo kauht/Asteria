@@ -4,3 +4,9 @@
 [submodule "vendor/imgui"]
 	path = vendor/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "vendor/safetyhook"]
+	path = vendor/safetyhook
+	url = https://github.com/cursey/safetyhook
+[submodule "vendor/zydis"]
+	path = vendor/zydis
+	url = https://github.com/zyantific/zydis
