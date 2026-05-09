@@ -1,13 +1,23 @@
 [
 {
   "directory": "C:\\Users\\macin\\Desktop\\asteria",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\config\\config.cpp.obj", "src\\core\\config\\config.cpp"],
-  "file": "src\\core\\config\\config.cpp"
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\entry.cpp.obj", "src\\entry.cpp"],
+  "file": "src\\entry.cpp"
 },
 {
   "directory": "C:\\Users\\macin\\Desktop\\asteria",
-  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\entry.cpp.obj", "src\\entry.cpp"],
-  "file": "src\\entry.cpp"
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\menu\\menu.cpp.obj", "src\\menu\\menu.cpp"],
+  "file": "src\\menu\\menu.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\menu\\ui\\ui.cpp.obj", "src\\menu\\ui\\ui.cpp"],
+  "file": "src\\menu\\ui\\ui.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\json\\include", "/Ivendor\\imgui", "/Ivendor\\imgui\\backends", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\utils\\config\\config.cpp.obj", "src\\utils\\config\\config.cpp"],
+  "file": "src\\utils\\config\\config.cpp"
 },
 {
   "directory": "C:\\Users\\macin\\Desktop\\asteria",
