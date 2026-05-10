@@ -10,3 +10,6 @@
 [submodule "vendor/zydis"]
 	path = vendor/zydis
 	url = https://github.com/zyantific/zydis
+[submodule "vendor/cs2-sdk"]
+	path = vendor/cs2-sdk
+	url = https://github.com/scros22/cs2-universal-offsets/
