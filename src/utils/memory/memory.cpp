@@ -1,51 +1,49 @@
 #include "memory.hpp"
 #include <windows.h>
-#include <Psapi.h>
 #include <vector>
-#include <charconv>
+#include <sstream>
+#include <iomanip>
 
 uintptr_t memory::FindPattern(const std::string_view& pattern, const uintptr_t module_base) {
+    if (!module_base) return 0;
+
     auto* base = reinterpret_cast<std::uint8_t*>(module_base);
 
-    MODULEINFO info{};
-    GetModuleInformation(GetCurrentProcess(), reinterpret_cast<HMODULE>(module_base), &info, sizeof(info));
-    size_t size = info.SizeOfImage;
+    const auto dos_header = reinterpret_cast<PIMAGE_DOS_HEADER>(base);
+    if (dos_header->e_magic != IMAGE_DOS_SIGNATURE) return 0;
 
-    struct byte_entry {
-        uint8_t byte;
-        bool wildcard;
-    };
-    std::vector<byte_entry> bytes;
+    const auto nt_headers = reinterpret_cast<PIMAGE_NT_HEADERS>(reinterpret_cast<std::uint8_t*>(dos_header) + dos_header->e_lfanew);
+    if (nt_headers->Signature != IMAGE_NT_SIGNATURE) return 0;
 
-    for (size_t i = 0; i < pattern.size();) {
-        if (pattern[i] == ' ') {
-            ++i;
-            continue;
-        }
+    const size_t size = nt_headers->OptionalHeader.SizeOfImage;
 
-        // "??" or "?"
-        if (pattern[i] == '?') {
-            bytes.push_back({ 0, true });
-            // Skip "??" or "?"
-            i += (i + 1 < pattern.size() && pattern[i + 1] == '?') ? 2 : 1;
-        } else {
-            uint8_t byte = 0;
-            auto result = std::from_chars(pattern.data() + i, pattern.data() + i + 2, byte, 16);
-            if (result.ec == std::errc{}) {
-                bytes.push_back({ byte, false });
-                i += 2;
+    std::vector<int> bytes;
+    {
+        std::stringstream ss;
+        ss << pattern;
+        std::string word;
+        while (ss >> word) {
+            if (word == "?" || word == "??") {
+                bytes.push_back(-1);
             } else {
-                ++i;
+                try {
+                    bytes.push_back(static_cast<int>(std::stoul(word, nullptr, 16)));
+                } catch (...) {
+                    continue;
+                }
             }
         }
     }
 
     if (bytes.empty()) return 0;
 
-    for (size_t i = 0; i <= size - bytes.size(); ++i) {
+    const size_t pattern_size = bytes.size();
+    const int* pattern_data = bytes.data();
+
+    for (size_t i = 0; i <= size - pattern_size; ++i) {
         bool found = true;
-        for (size_t j = 0; j < bytes.size(); ++j) {
-            if (!bytes[j].wildcard && base[i + j] != bytes[j].byte) {
+        for (size_t j = 0; j < pattern_size; ++j) {
+            if (pattern_data[j] != -1 && base[i + j] != static_cast<uint8_t>(pattern_data[j])) {
                 found = false;
                 break;
             }

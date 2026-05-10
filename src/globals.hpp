@@ -4,4 +4,7 @@
 
 namespace globals {
     HMODULE module;
+
+    // States
+    bool menu_open = true;
 }

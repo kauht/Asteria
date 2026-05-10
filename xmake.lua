@@ -15,8 +15,8 @@ add_files("src/**.cpp")
 add_syslinks("Psapi", "gdi32", "Advapi32")
 add_links("dxgi", "d3d11", "d3dcompiler", "user32.lib")
 
-add_includedirs("vendor/json/include", "vendor/imgui", "vendor/imgui/backends")
+add_includedirs("vendor/cs2-sdk/include", "vendor/json/include", "vendor/imgui", "vendor/imgui/backends", "vendor/safetyhook/include", "vendor/safetyhook/src", "vendor/zydis/src", "vendor/zydis", "vendor/zydis/include", "vendor/zydis/dependencies/zycore/include")
 
 -- add_includedirs("vendor/safetyhook/include", "vendor/safetyhook/src", "vendor/zydis/src", "vendor/zydis", "vendor/zydis/include", "vendor/zydis/dependencies/zycore/include")
--- add_files("vendor/imgui/*.cpp", "vendor/imgui/backends/imgui_impl_win32.cpp", "vendor/imgui/backends/imgui_impl_dx11.cpp", "vendor/safetyhook/src/**.cpp", "vendor/zydis/src/**.c")
--- add_defines("ZYDIS_STATIC_BUILD", "ZYCORE_STATIC_BUILD")
+add_files("vendor/imgui/*.cpp", "vendor/imgui/backends/imgui_impl_win32.cpp", "vendor/imgui/backends/imgui_impl_dx11.cpp", "vendor/safetyhook/src/**.cpp", "vendor/zydis/src/**.c")
+add_defines("ZYDIS_STATIC_BUILD", "ZYCORE_STATIC_BUILD")

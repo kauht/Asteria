@@ -21,4 +21,10 @@ namespace modules {
     inline HMODULE server;
     inline HMODULE tier0;
     inline HMODULE worldrenderer;
+
+    namespace patterns {
+
+
+
+    }
 }

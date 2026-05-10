@@ -1,8 +1,3 @@
-## Info about all hooks used in this project
+## asteria hooks
 
-### Will be added - estimated order
-Present
-WndProc
-CreateMove
-GeneratePrimitives and related
-CreateSubtickMove
+we try to use direct inline hooks with signatures cause vtables are annoying
