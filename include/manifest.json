@@ -1,0 +1,139 @@
+{
+  "build_number": 14160,
+  "generated_at": "2026-05-10T23:26:08.306571300-05:00",
+  "modules": {
+    "animationsystem.dll": {
+      "base": "0x7FFC43A50000",
+      "image": 12197888,
+      "size": 12197888,
+      "timestamp": 1778184833
+    },
+    "client.dll": {
+      "base": "0x7FFBFE5F0000",
+      "image": 41050112,
+      "size": 41050112,
+      "timestamp": 1778185065
+    },
+    "engine2.dll": {
+      "base": "0x7FFC50BD0000",
+      "image": 9818112,
+      "size": 9818112,
+      "timestamp": 1778185092
+    },
+    "filesystem_stdio.dll": {
+      "base": "0x7FFC96440000",
+      "image": 2281472,
+      "size": 2281472,
+      "timestamp": 1778184794
+    },
+    "host.dll": {
+      "base": "0x7FFC69D30000",
+      "image": 1413120,
+      "size": 1413120,
+      "timestamp": 1778184833
+    },
+    "inputsystem.dll": {
+      "base": "0x7FFCFBD90000",
+      "image": 323584,
+      "size": 323584,
+      "timestamp": 1778184775
+    },
+    "materialsystem2.dll": {
+      "base": "0x7FFCA3080000",
+      "image": 1564672,
+      "size": 1564672,
+      "timestamp": 1778184810
+    },
+    "networksystem.dll": {
+      "base": "0x7FFC48EE0000",
+      "image": 2838528,
+      "size": 2838528,
+      "timestamp": 1778184794
+    },
+    "panorama.dll": {
+      "base": "0x7FFC32840000",
+      "image": 5931008,
+      "size": 5931008,
+      "timestamp": 1778184885
+    },
+    "particles.dll": {
+      "base": "0x7FFC3A370000",
+      "image": 8257536,
+      "size": 8257536,
+      "timestamp": 1778184940
+    },
+    "pulse_system.dll": {
+      "base": "0x7FFC5CA00000",
+      "image": 2269184,
+      "size": 2269184,
+      "timestamp": 1778184780
+    },
+    "rendersystemdx11.dll": {
+      "base": "0x7FFC5CC30000",
+      "image": 5046272,
+      "size": 5046272,
+      "timestamp": 1778184795
+    },
+    "resourcesystem.dll": {
+      "base": "0x7FFCBB9D0000",
+      "image": 598016,
+      "size": 598016,
+      "timestamp": 1778184782
+    },
+    "scenesystem.dll": {
+      "base": "0x7FFC3AB50000",
+      "image": 9646080,
+      "size": 9646080,
+      "timestamp": 1778184897
+    },
+    "schemasystem.dll": {
+      "base": "0x7FFCBB950000",
+      "image": 520192,
+      "size": 520192,
+      "timestamp": 1778184780
+    },
+    "server.dll": {
+      "base": "0x7FFC15300000",
+      "image": 36450304,
+      "size": 36450304,
+      "timestamp": 1778185019
+    },
+    "soundsystem.dll": {
+      "base": "0x7FFC433C0000",
+      "image": 6864896,
+      "size": 6864896,
+      "timestamp": 1778184867
+    },
+    "tier0.dll": {
+      "base": "0x7FFC64780000",
+      "image": 4198400,
+      "size": 4198400,
+      "timestamp": 1778099437
+    },
+    "vphysics2.dll": {
+      "base": "0x7FFC489A0000",
+      "image": 5459968,
+      "size": 5459968,
+      "timestamp": 1778184887
+    }
+  },
+  "process": "cs2.exe",
+  "stages": {
+    "offsets": {
+      "elapsed_ms": 1405,
+      "enabled": true,
+      "output_dir": "include\\sdk",
+      "success": true
+    },
+    "signatures": {
+      "counts": {
+        "found": 512,
+        "total": 558
+      },
+      "elapsed_ms": 18626,
+      "enabled": true,
+      "output_dir": "include\\signatures",
+      "success": true
+    }
+  }
+}
