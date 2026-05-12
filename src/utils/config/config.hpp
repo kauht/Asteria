@@ -19,7 +19,7 @@ namespace config {
         float version = 1.0;
 
         std::unordered_map<std::string, Keybind> keybinds = {
-            {"menu_toggle", {VK_INSERT, true}},
+            {"toggle_menu", {VK_INSERT, true}},
         };
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds)

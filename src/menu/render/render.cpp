@@ -149,7 +149,7 @@ void render::Render() {
     pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, nullptr);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    // Restore null RT so the game's pipeline isn't left with our RT bound
+    // Restore null render target
     ID3D11RenderTargetView* nullRTV = nullptr;
     pDeviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
 }
@@ -174,7 +174,7 @@ HRESULT WINAPI render::hkResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCou
 
 LRESULT CALLBACK render::hkWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     input::ProcessKey(msg, wParam);
-    if (input::KeyDown(VK_INSERT)) globals::bMenuOpen.store(!globals::bMenuOpen.load());
+    if (input::KeyDown(config::g_config.keybinds["toggle_menu"].key)) globals::bMenuOpen.store(!globals::bMenuOpen.load());
 
     if (globals::bImGuiInitialized.load() && globals::bMenuOpen.load()) {
         ImGui_ImplWin32_WndProcHandler(wnd, msg, wParam, lParam);
