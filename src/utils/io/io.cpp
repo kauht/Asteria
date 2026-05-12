@@ -16,15 +16,64 @@ namespace io {
         return std::string(buf);
     }
 
+    static const char* basename(const char* path) {
+        const char* s = path;
+        for (const char* p = path; *p; ++p)
+            if (*p == '/' || *p == '\\') s = p + 1;
+        return s;
+    }
+
+    void print(LogLine line, ...) {
+        char msg[1024];
+        va_list args;
+        va_start(args, line);
+        vsprintf_s(msg, line.fmt, args);
+        va_end(args);
+
+        char out[1280];
+        sprintf_s(out, "[%s] [%s:%d] %s",
+            timestamp().c_str(),
+            basename(line.loc.file_name()),
+            line.loc.line(),
+            msg);
+
+#ifdef DEBUG
+        printf("%s", out);
+#endif
+        if (hLogFile)
+            WriteFile(hLogFile, out, (DWORD)strlen(out), nullptr, nullptr);
+    }
+
+    void println(LogLine line, ...) {
+        char msg[1024];
+        va_list args;
+        va_start(args, line);
+        vsprintf_s(msg, line.fmt, args);
+        va_end(args);
+
+        char out[1280];
+        sprintf_s(out, "[%s] [%s:%d] %s\n",
+            timestamp().c_str(),
+            basename(line.loc.file_name()),
+            line.loc.line(),
+            msg);
+
+#ifdef DEBUG
+        printf("%s", out);
+#endif
+        if (hLogFile)
+            WriteFile(hLogFile, out, (DWORD)strlen(out), nullptr, nullptr);
+    }
+
     void Initialize() {
-        #ifdef DEBUG
+#ifdef DEBUG
         AllocConsole();
         FILE* f{};
         freopen_s(&f, "CONOUT$", "w", stdout);
         SetConsoleTitleA("Asteria Debug");
-        #endif
-
-        hLogFile = CreateFileA("asteria.log", GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, nullptr);
+#endif
+        hLogFile = CreateFileA("asteria.log", GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, nullptr);
         io::println("--- Asteria Log Initialized ---");
     }
 
@@ -33,42 +82,8 @@ namespace io {
             CloseHandle(hLogFile);
             hLogFile = nullptr;
         }
-        #ifdef DEBUG
+#ifdef DEBUG
         FreeConsole();
-        #endif
-    }
-
-    void print(const char* fmt, ...) {
-        char buf[1024];
-        va_list args;
-        va_start(args, fmt);
-        vsprintf_s(buf, fmt, args);
-        va_end(args);
-
-        std::string message = "[" + timestamp() + "] " + buf;
-        
-        #ifdef DEBUG
-        printf("%s", message.c_str());
-        #endif
-
-        if (hLogFile)
-            WriteFile(hLogFile, message.c_str(), (DWORD)message.size(), nullptr, nullptr);
-    }
-
-    void println(const char* fmt, ...) {
-        char buf[1024];
-        va_list args;
-        va_start(args, fmt);
-        vsprintf_s(buf, fmt, args);
-        va_end(args);
-
-        std::string message = "[" + timestamp() + "] " + buf + "\n";
-        
-        #ifdef DEBUG
-        printf("%s", message.c_str());
-        #endif
-
-        if (hLogFile)
-            WriteFile(hLogFile, message.c_str(), (DWORD)message.size(), nullptr, nullptr);
+#endif
     }
 }
