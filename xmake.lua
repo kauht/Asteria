@@ -4,9 +4,6 @@ set_project("asteria")
 set_version("1.0")
 set_languages("cxx23")
 
--- DEBUG HELPERS: when diagnosing generator include-order issues we enable
--- MSVC's /showIncludes globally so the build prints the full header include
--- chain. This is temporary and should be removed once diagnostics are done.
 add_cxflags("/showIncludes")
 
 add_rules("mode.debug", "mode.release")
