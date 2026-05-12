@@ -1,3 +1,5 @@
-namespace menu {
+#pragma once
 
+namespace menu {
+    void menu();
 }

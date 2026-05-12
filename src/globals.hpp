@@ -1,12 +1,13 @@
+#pragma once
 #include <windows.h>
 #include <string>
 #include <vector>
 #include <atomic>
 
 namespace globals {
-    HMODULE module;
+    inline HMODULE module;
 
     // States
-    std::atomic<bool> bMenuOpen = true;
-    std::atomic<bool> bImGuiInitialized = false;
+    inline std::atomic<bool> bMenuOpen = true;
+    inline std::atomic<bool> bImGuiInitialized = false;
 }

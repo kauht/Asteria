@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "globals.hpp"
-#include "utils/modules/modules.hpp"
+#include "menu/render/render.hpp"
 #include "utils/utils.hpp"
 #include "core/hooks/hooks.hpp"
 #include "core/entities/entities.hpp"
@@ -8,7 +8,6 @@
 DWORD WINAPI entry(LPVOID) {
     io::Initialize();
     modules::Initialize();
-    input::Initialize();
     config::Initialize();
     hooks::Install();
     // Entity initialize
@@ -20,7 +19,6 @@ DWORD WINAPI entry(LPVOID) {
     // entity shutdown
     hooks::Uninstall();
     config::Shutdown();
-    input::Shutdown();
     modules::Shutdown();
     io::Shutdown();
 

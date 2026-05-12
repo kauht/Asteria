@@ -13,6 +13,8 @@ namespace hooks {
     }
 
     namespace original {
+        inline SafetyHookInline Present;
+        inline SafetyHookInline ResizeBuffers;
         inline SafetyHookInline GeneratePrimitives;
         inline SafetyHookInline CreateMoveInner;
         inline SafetyHookInline Prediction;
@@ -21,4 +23,12 @@ namespace hooks {
         inline SafetyHookInline OnRemoveEntity;
     }
 
+    namespace vtables {
+        inline void** pSwapChainVTable;
+
+        enum {
+            PRESENT        = 8,
+            RESIZE_BUFFERS = 13,
+        };
+    }
 }

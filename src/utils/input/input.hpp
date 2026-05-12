@@ -4,10 +4,7 @@
 
 namespace input {
     inline std::unordered_map<int, bool> key_states;
-    inline bool running = true;
 
-    void Initialize();
-    void Shutdown();
     bool KeyDown(int key);
-    void ProcessKey();
+    void ProcessKey(UINT msg, WPARAM wParam);
 }

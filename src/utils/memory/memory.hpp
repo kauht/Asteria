@@ -3,7 +3,7 @@
 #include <string>
 
 namespace memory {
-    uintptr_t FindPattern(const std::string_view& pattern, const uintptr_t module_base);
+    uintptr_t FindPattern(const std::string_view& pattern, const HMODULE module_base);
 
     template <typename T = void*>
     T GetVTableMethod(uintptr_t base, size_t index) {

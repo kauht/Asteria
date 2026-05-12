@@ -4,7 +4,7 @@
 #include <sstream>
 #include <iomanip>
 
-uintptr_t memory::FindPattern(const std::string_view& pattern, const uintptr_t module_base) {
+uintptr_t memory::FindPattern(const std::string_view& pattern, const HMODULE module_base) {
     if (!module_base) return 0;
 
     auto* base = reinterpret_cast<std::uint8_t*>(module_base);
