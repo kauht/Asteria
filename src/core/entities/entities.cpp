@@ -29,4 +29,9 @@ namespace entities {
 
         return it->second;
     }
+
+    sdk::client::C_BaseEntity* GetLocalPlayer() {
+        return 0;
+    }
+
 }

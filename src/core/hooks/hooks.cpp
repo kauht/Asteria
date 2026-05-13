@@ -23,7 +23,7 @@ namespace hooks {
         render::Shutdown();
         original::Present       = {};
         original::ResizeBuffers = {};
-        original::CreateMoveInner = {};
+        original::CreateMove = {};
         original::OnAddEntity   = {};
         original::OnRemoveEntity = {};
     }

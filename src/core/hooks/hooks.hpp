@@ -15,12 +15,10 @@ namespace hooks {
     namespace original {
         inline SafetyHookInline Present;
         inline SafetyHookInline ResizeBuffers;
-        inline SafetyHookInline GeneratePrimitives;
-        inline SafetyHookInline CreateMoveInner;
-        inline SafetyHookInline Prediction;
         inline SafetyHookInline CreateMove;
         inline SafetyHookInline OnAddEntity;
         inline SafetyHookInline OnRemoveEntity;
+        inline SafetyHookInline GeneratePrimitives;
     }
 
     namespace vtables {

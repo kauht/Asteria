@@ -1,4 +1,3 @@
-
 #include "config.hpp"
 #include <fstream>
 

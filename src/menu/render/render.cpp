@@ -98,6 +98,10 @@ void render::Initialize(IDXGISwapChain* swapChain) {
     if (!hWnd) return;
 
     ImGui::CreateContext();
+
+    ui::dpi_scale = GetDpiForWindow(hWnd) / 96.f;
+
+    ui::LoadFonts();
     ui::SetupStyle();
 
     ImGuiIO& io = ImGui::GetIO();
