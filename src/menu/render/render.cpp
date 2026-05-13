@@ -1,15 +1,28 @@
 #include "render.hpp"
 #include "../menu.hpp"
-#include "../ui/ui.hpp"
-#include <imgui.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-#include <winuser.h>
 #include "../../globals.hpp"
 #include "../../utils/utils.hpp"
 #include "../../core/hooks/hooks.hpp"
+#include "zscene/zscene.hpp"
+#include <d3d11.h>
+#include <zdraw.hpp>
+#include <zui/zui.hpp>
+#include <zscene/zscene.hpp>
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+long long __stdcall render::WndProc_Handler( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam )
+	{
+		zui::process_wndproc_message( msg, wparam, lparam );
+
+		// @note: could move these to process_wndproc_message
+
+		if ( msg == WM_SIZE && wparam != SIZE_MINIMIZED )
+			resize( LOWORD( lparam ), HIWORD( lparam ) );
+
+		if ( msg == WM_DESTROY )
+			PostQuitMessage( 0 );
+
+		return DefWindowProcW( hwnd, msg, wparam, lparam );
+	}
 
 void render::GetDevice() {
     WNDCLASSEX wc{};
@@ -22,7 +35,7 @@ void render::GetDevice() {
     HWND hWnd = CreateWindowEx(0, wc.lpszClassName, "", WS_OVERLAPPEDWINDOW, 0, 0, 100, 100, nullptr, nullptr, wc.hInstance, nullptr);
 
     if (!hWnd) {
-        io::println("render::GetDevice — failed to create dummy window");
+        io::println("couldn't to create window");
         return;
     }
 
@@ -45,7 +58,7 @@ void render::GetDevice() {
                                                D3D11_SDK_VERSION, &sd, &pSc, &pDev, &featureLevel, &pCtx);
 
     if (FAILED(hr)) {
-        io::println("render::GetDevice — D3D11CreateDeviceAndSwapChain failed");
+        io::println("create device and swap chain failed");
         DestroyWindow(hWnd);
         UnregisterClass(wc.lpszClassName, wc.hInstance);
         return;
@@ -58,7 +71,6 @@ void render::GetDevice() {
     pCtx->Release();
     DestroyWindow(hWnd);
     UnregisterClass(wc.lpszClassName, wc.hInstance);
-    if (!hooks::vtables::pSwapChainVTable) io::println("hooks::Install - pSwapChainVTable is null");
 }
 
 void render::CreateRenderTarget() {
@@ -85,33 +97,25 @@ void render::Initialize(IDXGISwapChain* swapChain) {
     if (!pDevice) return;
 
     pDevice->GetImmediateContext(&pDeviceContext);
-    if (!pDeviceContext) {
-        pDevice->Release();
-        pDevice = nullptr;
-        return;
-    }
 
     DXGI_SWAP_CHAIN_DESC swapChainDesc{};
     pSwapChain->GetDesc(&swapChainDesc);
     hWnd = swapChainDesc.OutputWindow;
+    view_width  = swapChainDesc.BufferDesc.Width;
+    view_height = swapChainDesc.BufferDesc.Height;
 
-    if (!hWnd) return;
+    if (!zdraw::initialize(pDevice, pDeviceContext)) return;
+    if (!zui::initialize(hWnd)) return;
 
-    ImGui::CreateContext();
+    // create context
 
-    ui::dpi_scale = GetDpiForWindow(hWnd) / 96.f;
+    scene.initialize(pDevice, pDeviceContext, view_width, view_height);
+    scene.set_orientation(zscene::orientation::z_up);
+    scene.set_clear_color(0.f, 0.f, 0.f);
+    scene.play();
 
-    ui::LoadFonts();
-    ui::SetupStyle();
-
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-
-    ImGui_ImplWin32_Init(hWnd);
-    ImGui_ImplDX11_Init(pDevice, pDeviceContext);
 
     CreateRenderTarget();
-    if (!pRenderTargetView) return;
 
     oWndProc = reinterpret_cast<WNDPROC>(SetWindowLongPtrA(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&hkWndProc)));
     globals::bImGuiInitialized.store(true);
@@ -121,13 +125,12 @@ void render::Shutdown() {
     if (!globals::bImGuiInitialized.load()) return;
     if (!hWnd || !oWndProc) return;
 
+    scene.shutdown();
+
     SetWindowLongPtrA(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(oWndProc));
     oWndProc = nullptr;
 
     ReleaseRenderTarget();
-    ImGui_ImplDX11_Shutdown();
-    ImGui_ImplWin32_Shutdown();
-    ImGui::DestroyContext();
 
     if (pDeviceContext) pDeviceContext->Release();
     if (pDevice) pDevice->Release();
@@ -142,20 +145,34 @@ void render::Shutdown() {
 void render::Render() {
     if (!globals::bImGuiInitialized.load() || !pDeviceContext || !pRenderTargetView) return;
 
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    menu::menu();
-
-    ImGui::Render();
+    D3D11_VIEWPORT vp;
+    vp.Width = static_cast<float>(view_width);
+    vp.Height = static_cast<float>(view_height);
+    vp.MinDepth = 0.f;
+    vp.MaxDepth = 1.f;
+    vp.TopLeftX = 0.f;
+    vp.TopLeftY = 0.f;
+    pDeviceContext->RSSetViewports(1, &vp);
 
     pDeviceContext->OMSetRenderTargets(1, &pRenderTargetView, nullptr);
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    zdraw::begin_frame();
+    if (globals::bMenuOpen.load()) menu::menu();
+    zdraw::end_frame();
 
     // Restore null render target
     ID3D11RenderTargetView* nullRTV = nullptr;
     pDeviceContext->OMSetRenderTargets(1, &nullRTV, nullptr);
+}
+
+void render::resize(unsigned int width, unsigned int height) {
+    view_width = width;
+    view_height = height;
+
+    if (globals::bImGuiInitialized.load()) {
+        ReleaseRenderTarget();
+        CreateRenderTarget();
+    }
 }
 
 HRESULT WINAPI render::hkPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags) {
@@ -173,6 +190,9 @@ HRESULT WINAPI render::hkResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCou
 
     if (globals::bImGuiInitialized.load()) CreateRenderTarget();
 
+    view_width = width;
+    view_height = height;
+
     return result;
 }
 
@@ -181,8 +201,7 @@ LRESULT CALLBACK render::hkWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lPa
     if (input::KeyDown(config::g_config.keybinds["toggle_menu"].key)) globals::bMenuOpen.store(!globals::bMenuOpen.load());
 
     if (globals::bImGuiInitialized.load() && globals::bMenuOpen.load()) {
-        ImGui_ImplWin32_WndProcHandler(wnd, msg, wParam, lParam);
-        return TRUE;
+        return WndProc_Handler(wnd, msg, wParam, lParam);
     }
 
     return CallWindowProcA(oWndProc, wnd, msg, wParam, lParam);

@@ -74,7 +74,6 @@ namespace io {
 #endif
         hLogFile = CreateFileA("asteria.log", GENERIC_WRITE, FILE_SHARE_READ, nullptr,
             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, nullptr);
-        io::println("--- Asteria Log Initialized ---");
     }
 
     void Shutdown() {

@@ -1,9 +1,6 @@
 [submodule "vendor/json"]
 	path = vendor/json
 	url = https://github.com/nlohmann/json
-[submodule "vendor/imgui"]
-	path = vendor/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "vendor/safetyhook"]
 	path = vendor/safetyhook
 	url = https://github.com/cursey/safetyhook
@@ -13,3 +10,6 @@
 [submodule "vendor/cs2-sdk"]
 	path = vendor/cs2-sdk
 	url = https://github.com/scros22/cs2-universal-offsets/
+[submodule "vendor/zdraw"]
+	path = vendor/zdraw
+	url = https://github.com/nul1ex/zdraw
