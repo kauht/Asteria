@@ -4,19 +4,22 @@
 #include "utils/utils.hpp"
 #include "core/hooks/hooks.hpp"
 #include "core/entities/entities.hpp"
+#include "core/features/features.hpp"
 
 DWORD WINAPI entry(LPVOID) {
     io::Initialize();
     modules::Initialize();
     config::Initialize();
+    features::Initialize();
     hooks::Install();
-    // Entity initialize
+    entities::PopulateExistingEntities();
     io::println("--- Asteria Initialized ---");
 
     while (!input::KeyDown(VK_DELETE)); // Wait for delete key to be pressed to exit
 
     io::println("--- Asteria Shutdown ---\n\nYou may now close this window...");
     // entity shutdown
+    features::Shutdown();
     hooks::Uninstall();
     config::Shutdown();
     modules::Shutdown();

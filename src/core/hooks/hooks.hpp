@@ -8,8 +8,9 @@ namespace hooks {
     void Uninstall();
 
     namespace handlers {
-        std::uintptr_t __fastcall OnAddEntity(void* pEntitySystem, sdk::client::C_BaseEntity* pEntity, CHandle<sdk::client::C_BaseEntity> handle);
-        std::uintptr_t __fastcall OnRemoveEntity(void* pEntitySystem, sdk::client::C_BaseEntity* pEntity, CHandle<sdk::client::C_BaseEntity> handle);
+        uintptr_t __fastcall OnAddEntity(void* pEntitySystem, sdk::client::C_BaseEntity* pEntity, CHandle<sdk::client::C_BaseEntity> handle);
+        uintptr_t __fastcall OnRemoveEntity(void* pEntitySystem, sdk::client::C_BaseEntity* pEntity, CHandle<sdk::client::C_BaseEntity> handle);
+        void __fastcall hkGeneratePrimitives(void* __this, sdk::scenesystem::CSceneAnimatableObject* object, void* a3, sdk::scenesystem::c_mesh_primitive_output_buffer* render_buf);
     }
 
     namespace original {
