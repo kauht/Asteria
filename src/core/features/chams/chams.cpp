@@ -2,240 +2,242 @@
 #include "../../../core/hooks/hooks.hpp"
 #include "../../../utils/modules/modules.hpp"
 #include "../../../utils/memory/memory.hpp"
-#include "../../../utils/io/io.hpp"
 #include <signatures/signatures.hpp>
 #include <sdk/offsets.hpp>
-#include <sdk/scenesystem_dll.hpp>
-#include <sdk/materialsystem2_dll.hpp>
-#include <array>
+#include <sdk/client_dll.hpp>
+#include <format>
 
-namespace features {
-    using namespace sdk::scenesystem;
-    using namespace sdk::materialsystem2;
+namespace features::chams {
 
-    static constexpr uint64_t k_kv3Unk0 = 0x469806E97412167CULL;
-    static constexpr uint64_t k_kv3Unk1 = 0xE73790B53EE6F2AFULL;
+    static void DisablePVS() {
+        auto addr = memory::FindPattern("48 8D 0D ? ? ? ? 33 D2 FF 50", modules::engine2);
+        if (!addr) return;
 
-    static void* g_materialSystem = nullptr;
-    static bool(__fastcall* g_load_kv3)(void*, void*, const char*, const kv3_id_t*, const char*, uint32_t) = nullptr;
-    static void*(__fastcall* g_create_material)(void*, void**, const char*, void*, void*, char) = nullptr;
+        auto displacement = *reinterpret_cast<int32_t*>(addr + 3);
+        auto pvs_manager = reinterpret_cast<void*>(addr + 7 + displacement);
+        auto set_pvs = reinterpret_cast<void(__fastcall*)(void*, bool)>((*reinterpret_cast<void***>(pvs_manager))[6]);
 
-    static CMaterial* g_mat_enemy[3] = {};
-    static CMaterial* g_mat_team[3] = {};
-    static CMaterial* g_mat_viewmodel[3] = {};
-
-    static CMaterial* CreateMaterialFromKV3(const char* name, const char* kv3_text) {
-        if (!g_materialSystem || !g_load_kv3 || !g_create_material)
-            return nullptr;
-
-        std::array<uint8_t, 0x400> buf{};
-        auto* kv = buf.data() + 0x100;
-        kv3_id_t id{ "generic", k_kv3Unk0, k_kv3Unk1 };
-
-        if (!g_load_kv3(kv, nullptr, kv3_text, &id, nullptr, 0))
-            return nullptr;
-
-        void* handle = nullptr;
-        g_create_material(g_materialSystem, &handle, name, kv, nullptr, 0);
-
-        return handle ? *reinterpret_cast<CMaterial**>(handle) : nullptr;
+        set_pvs(pvs_manager, false);
     }
 
-    namespace chams {
-        void Initialize() {
-            auto ms_base = reinterpret_cast<uintptr_t>(modules::materialsystem2);
-            if (!ms_base) return;
+    void Initialize() {
+        material_system = *(void**)((uintptr_t)modules::materialsystem2 + 0x15D750);
+        CreateMaterial = (decltype(CreateMaterial))memory::FindPattern(sdk::sigs::materialsystem2::CreateMaterial, modules::materialsystem2);
+        LoadKV3 = (decltype(LoadKV3))memory::FindPattern(sdk::sigs::tier0::LoadKV3, modules::tier0);
+        DisablePVS();
 
-            g_materialSystem = *reinterpret_cast<void**>(ms_base + 0x15D750);
-            if (!g_materialSystem) return;
+        for (int i = 0; i < kMaterialCount; i++) {
+            auto name = std::format("occ_{}", kMaterials[i].tag).c_str();
+            g_mat_enemy_occ[i] = MakeMaterial(name, kMaterials[i].kv3_occ);
 
-            g_create_material = reinterpret_cast<decltype(g_create_material)>(memory::FindPattern(sdk::sigs::materialsystem2::CreateMaterial, modules::materialsystem2));
-            g_load_kv3 = reinterpret_cast<decltype(g_load_kv3)>(memory::FindPattern(sdk::sigs::tier0::LoadKV3, modules::tier0));
+            name = std::format("tocc_{}", kMaterials[i].tag).c_str();
+            g_mat_team_occ[i] = MakeMaterial(name, kMaterials[i].kv3_occ);
 
-            g_mat_enemy[0] = CreateMaterialFromKV3("asteria_ev_flat", VMat::Flat);
-            g_mat_enemy[1] = CreateMaterialFromKV3("asteria_ev_glow", VMat::Glow);
-            g_mat_enemy[2] = CreateMaterialFromKV3("asteria_ev_elec", VMat::ElectricVis);
-            g_mat_team[0] = CreateMaterialFromKV3("asteria_tv_flat", VMat::Flat);
-            g_mat_team[1] = CreateMaterialFromKV3("asteria_tv_glow", VMat::Glow);
-            g_mat_team[2] = CreateMaterialFromKV3("asteria_tv_elec", VMat::ElectricVis);
-            g_mat_viewmodel[0] = CreateMaterialFromKV3("asteria_vm_flat", VMat::Flat);
-            g_mat_viewmodel[1] = CreateMaterialFromKV3("asteria_vm_glow", VMat::Glow);
-            g_mat_viewmodel[2] = CreateMaterialFromKV3("asteria_vm_elec", VMat::ElectricVis);
+            name = std::format("vis_{}", kMaterials[i].tag).c_str();
+            g_mat_enemy[i] = MakeMaterial(name, kMaterials[i].kv3_vis);
+
+            name = std::format("tvis_{}", kMaterials[i].tag).c_str();
+            g_mat_team[i] = MakeMaterial(name, kMaterials[i].kv3_vis);
         }
+        for (int i = 0; i < kMaterialCountVM; ++i) {
+            auto name = std::format("vm_{}", kMaterialsVM[i].tag).c_str();
+            g_mat_viewmodel[i] = MakeMaterial(name, kMaterialsVM[i].kv3_vis);
+        }
+
+        FindParameter = (decltype(FindParameter))memory::FindPattern(sdk::sigs::materialsystem2::FindParameter, modules::materialsystem2);
+        UpdateParameter = (decltype(UpdateParameter))memory::FindPattern(sdk::sigs::materialsystem2::UpdateParameter, modules::materialsystem2);
+
+        auto& wc = config::g_config.chams;
+        g_wire_hand = MakeWireMaterial("vm_hand_wire", wc.hand_wire_color.r, wc.hand_wire_color.g, wc.hand_wire_color.b, wc.hand_wire_color.a);
+        g_wire_weapon = MakeWireMaterial("vm_weapon_wire", wc.weapon_wire_color.r, wc.weapon_wire_color.g, wc.weapon_wire_color.b, wc.weapon_wire_color.a);
     }
 
-    static void Override(c_mesh_draw_primitive* mesh, CMaterial* mat, uint32_t color) {
-        mesh->m_material = mat;
-        mesh->m_tint_color = color;
+    void RecolorWireframe(int which, const config::Color& color) {
+        void* mat = which ? g_wire_weapon : g_wire_hand;
+
+        void* param = FindParameter(mat, "g_vOverrideColor");
+        if (!param) return;
+
+        auto* values = reinterpret_cast<float*>((uintptr_t)param + 0x08);
+        values[0] = color.r;
+        values[1] = color.g;
+        values[2] = color.b;
+        values[3] = color.a;
+
+        UpdateParameter(param);
     }
 
     static uint32_t PackColor(float r, float g, float b, float a) {
-        return (static_cast<uint8_t>(r * 255.0f)) |
-               (static_cast<uint8_t>(g * 255.0f) << 8) |
-               (static_cast<uint8_t>(b * 255.0f) << 16) |
-               (static_cast<uint8_t>(a * 255.0f) << 24);
+        return (uint8_t)(r * 255)
+             | ((uint8_t)(g * 255) << 8)
+             | ((uint8_t)(b * 255) << 16)
+             | ((uint8_t)(a * 255) << 24);
     }
 
-    static bool SubStr(const char* str, const char* sub);
-    enum ViewModelType { NOT_VM, VM_WEAPON, VM_HAND };
-
-    static int g_gp_debug = 0;
-
-    static const char* GetRawDesignerName(uint16_t ent_index) {
-        uintptr_t client_base = reinterpret_cast<uintptr_t>(modules::client);
-        if (!client_base) return nullptr;
-
-        auto entity_system = *reinterpret_cast<void**>(client_base + cs2::offsets::client::GameEntitySystemPtr);
-        if (!entity_system) return nullptr;
-
-        int nChunk = ent_index / 512;
-        int nSlot = ent_index % 512;
-
-        auto* chunks = reinterpret_cast<uintptr_t*>(reinterpret_cast<uint8_t*>(entity_system) + 0x10);
-        auto pChunk = *reinterpret_cast<uintptr_t*>(chunks + nChunk);
-        if (!pChunk) return nullptr;
-
-        auto* identity = reinterpret_cast<uint8_t*>(pChunk + nSlot * 0x70);
-        return *reinterpret_cast<const char**>(identity + 0x20);
+    static void SetPrimitiveMaterial(c_mesh_primitive_output_buffer* buffer, int from, int to, void* material, uint32_t color) {
+        float alpha = ((color >> 24) & 0xFF) / 255.0f;
+        for (int i = from; i < to; i++) {
+            buffer->m_out[i].m_material = material;
+            buffer->m_out[i].m_tint_color = color;
+            buffer->m_out[i].m_alpha_scale = alpha;
+        }
     }
 
-    static ViewModelType GetViewModelType(uint16_t ent_index) {
-        const char* designer = nullptr;
+    void Chams(void* scene, CSceneAnimatableObject* scene_object, void* context, c_mesh_primitive_output_buffer* buffer) {
+        if (!scene_object || !buffer) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
+        }
+        auto& cfg = config::g_config.chams;
 
-        // Method 1: try custom entity map
-        auto* ent = entities::GetEntityByIndex(ent_index);
-        if (ent) {
-            auto identity = *reinterpret_cast<uintptr_t*>(reinterpret_cast<uint8_t*>(ent) + 0x10);
-            if (identity)
-                designer = *reinterpret_cast<const char**>(reinterpret_cast<uint8_t*>(identity) + 0x20);
+        CHandle<void> handle{ scene_object->m_hOwner.m_Index };
+        if (!handle.IsValid()) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
         }
 
-        // Method 2: fallback to raw entity list (catches viewmodels not in custom map)
-        if (!designer)
-            designer = GetRawDesignerName(ent_index);
+        uint16_t entity_index = handle.GetIndex();
 
-        if (designer && SubStr(designer, "hudmodel")) {
-            if (SubStr(designer, "arms"))
-                return VM_HAND;
-            return VM_WEAPON;
+        auto* entity = static_cast<sdk::client::C_BaseEntity*>(CGameEntitySystem::GetEntityByIndex(entity_index));
+        auto* local_controller = *reinterpret_cast<sdk::client::CCSPlayerController**>((uintptr_t)modules::client + cs2::offsets::client::LocalPlayerController_ptr);
+        if (!entity || !local_controller) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
         }
 
-        // Method 3: check against local player's arms viewmodel handle
-        auto* local_ctrl = entities::GetLocalPlayer();
-        if (local_ctrl) {
-            auto pawn_handle = *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(local_ctrl) + 0x90C);
-            uint16_t pawn_idx = pawn_handle & 0x7FFF;
-            if (pawn_idx > 0 && pawn_idx <= 4096) {
-                auto* pawn = entities::GetEntityByIndex(pawn_idx);
-                if (pawn) {
-                    auto arms_handle = *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(pawn) + 0x1B58);
-                    if (arms_handle != 0xFFFFFFFF && (arms_handle & 0x7FFF) == ent_index) return VM_HAND;
+        int entity_team = entity->m_iTeamNum();
+        bool is_local = local_controller->m_hPawn().GetIndex() == entity_index;
+
+        auto* name_ptr = CGameEntitySystem::GetDesignerName(entity_index);
+        if (!name_ptr) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
+        }
+        std::string name = name_ptr;
+        if (name.empty()) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
+        }
+
+        bool is_hands = name.contains("cs2_hudmodel_arms");
+        bool is_weapon = name.contains("cs2_hudmodel_weapon");
+
+        bool is_player = (entity_team == 2 || entity_team == 3) && !is_local && CGameEntitySystem::IsPlayerPawn(entity_index);
+
+        // Select material
+
+        void* viewmodel_material = nullptr;
+        uint32_t viewmodel_color = 0;
+        bool viewmodel_is_wireframe = false;
+
+        void* occluded_material = nullptr;
+        uint32_t occluded_color = 0;
+
+        void* visible_material = nullptr;
+        uint32_t visible_color = 0;
+
+        if (is_hands) {
+            if (cfg.hand_chams_enabled) {
+                viewmodel_color = PackColor(cfg.hand_color.r, cfg.hand_color.g, cfg.hand_color.b, cfg.hand_color.a);
+                viewmodel_material = g_mat_viewmodel[cfg.hand_material];
+                if (cfg.hand_material == kMaterialCountVM - 1) {
+                    viewmodel_material = g_wire_hand;
+                    viewmodel_is_wireframe = true;
+                }
+            }
+        } else if (is_weapon) {
+            if (cfg.weapon_chams_enabled) {
+                viewmodel_color = PackColor(cfg.weapon_color.r, cfg.weapon_color.g, cfg.weapon_color.b, cfg.weapon_color.a);
+                viewmodel_material = g_mat_viewmodel[cfg.weapon_material];
+                if (cfg.weapon_material == kMaterialCountVM - 1) {
+                    viewmodel_material = g_wire_weapon;
+                    viewmodel_is_wireframe = true;
                 }
             }
         }
 
-        return NOT_VM;
-    }
-
-    static bool SubStr(const char* str, const char* sub) {
-        if (!str || !sub) return false;
-        while (*str) {
-            const char* a = str;
-            const char* b = sub;
-            while (*a && *b && *a == *b) { a++; b++; }
-            if (!*b) return true;
-            str++;
-        }
-        return false;
-    }
-
-    void chams::OnGeneratePrimitives(void* scene, CSceneAnimatableObject* obj, void* ctx, c_mesh_primitive_output_buffer* buf) {
-        auto& cfg = config::g_config.chams;
-
-        auto orig = [&]() {
-            hooks::original::GeneratePrimitives.fastcall<void>(scene, obj, ctx, buf);
-        };
-
-        if (!obj || !buf) { orig(); return; }
-
-        uint32_t handle = obj->m_hOwner.m_Index;
-
-        if (handle == 0xFFFFFFFF) { orig(); return; }
-
-        const uint16_t ent_index = handle & 0x7FFF;
-
-        if (g_gp_debug < 1000) {
-            const char* rn = GetRawDesignerName(ent_index);
-            if (rn && (SubStr(rn, "player") || SubStr(rn, "pawn") || SubStr(rn, "Player") || SubStr(rn, "Pawn")))
-                io::println("[gp-player] idx=%hu raw='%s'", ent_index, rn);
-            g_gp_debug++;
-        }
-
-        // Viewmodel (weapon/hands)
-        auto vm_type = GetViewModelType(ent_index);
-        if (vm_type != NOT_VM) {
-            bool enabled = (vm_type == VM_WEAPON) ? cfg.weapon_chams_enabled : cfg.hand_chams_enabled;
-            if (!enabled || !g_mat_viewmodel[0]) { orig(); return; }
-            auto* mat = g_mat_viewmodel[cfg.viewmodel_material];
-            if (!mat) { orig(); return; }
-            uint32_t col = PackColor(cfg.viewmodel_color.r, cfg.viewmodel_color.g, cfg.viewmodel_color.b, cfg.viewmodel_color.a);
-            int start = buf->m_start_primitive;
-            orig();
-            int count = buf->m_start_primitive - start;
-            if (count > 0) {
-                for (int i = start; i < start + count; ++i)
-                    Override(&buf->m_out[i], mat, col);
+        if (is_player && entity_team != local_controller->m_iTeamNum()) {
+            if (cfg.enemy_occ_enabled) {
+                int idx = cfg.enemy_occ_material;
+                if (idx >= kMaterialCount) idx = 0;
+                occluded_material = g_mat_enemy_occ[idx];
+                occluded_color = PackColor(cfg.enemy_occ_color.r, cfg.enemy_occ_color.g, cfg.enemy_occ_color.b, cfg.enemy_occ_color.a);
             }
+            if (cfg.enemy_vis_enabled) {
+                int idx = cfg.enemy_vis_material;
+                if (idx >= kMaterialCount) idx = 0;
+                visible_material = g_mat_enemy[idx];
+                visible_color = PackColor(cfg.enemy_vis_color.r, cfg.enemy_vis_color.g, cfg.enemy_vis_color.b, cfg.enemy_vis_color.a);
+            }
+        } else if (is_player) {
+            if (cfg.team_occ_enabled) {
+                int idx = cfg.team_occ_material;
+                if (idx >= kMaterialCount) idx = 0;
+                occluded_material = g_mat_team_occ[idx];
+                occluded_color = PackColor(cfg.team_occ_color.r, cfg.team_occ_color.g, cfg.team_occ_color.b, cfg.team_occ_color.a);
+            }
+            if (cfg.team_vis_enabled) {
+                int idx = cfg.team_vis_material;
+                if (idx >= kMaterialCount) idx = 0;
+                visible_material = g_mat_team[idx];
+                visible_color = PackColor(cfg.team_vis_color.r, cfg.team_vis_color.g, cfg.team_vis_color.b, cfg.team_vis_color.a);
+            }
+        }
+
+        if (!viewmodel_material && !occluded_material && !visible_material) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
             return;
         }
 
-        auto* ent = entities::GetEntityByIndex(ent_index);
-        if (!ent) { orig(); return; }
+        int first_primitive = buffer->m_start_primitive;
+        if (first_primitive < 0 || buffer->m_max_output_primitives <= 0 || first_primitive >= buffer->m_max_output_primitives) {
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            return;
+        }
 
-        // Team check
-        int team = ent->m_iTeamNum();
-        if (team != 2 && team != 3) { orig(); return; }
+        // Apply material
 
-        // Player pawn filter
-        bool is_player_pawn = false;
-        for (int i = 1; i <= 64; ++i) {
-            auto* ctrl = entities::GetEntityByIndex(i);
-            if (!ctrl) continue;
-            auto pawn_handle = *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(ctrl) + 0x90C);
-            if ((pawn_handle & 0x7FFF) == ent_index) {
-                is_player_pawn = true;
-                break;
+        hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+
+        int primitive_count = buffer->m_start_primitive - first_primitive;
+        if (primitive_count <= 0) return;
+
+        void* first_pass = nullptr;
+        uint32_t first_color = 0;
+        void* second_pass = nullptr;
+        uint32_t second_color = 0;
+
+        if (is_weapon && viewmodel_is_wireframe) {
+            first_pass = g_mat_viewmodel[0];
+            first_color = viewmodel_color;
+            second_pass = viewmodel_material;
+            second_color = viewmodel_color;
+        } else if (occluded_material && visible_material) {
+            first_pass = occluded_material;
+            first_color = occluded_color;
+            second_pass = visible_material;
+            second_color = visible_color;
+        } else if (viewmodel_material) {
+            first_pass = viewmodel_material;
+            first_color = viewmodel_color;
+        } else if (occluded_material) {
+            first_pass = occluded_material;
+            first_color = occluded_color;
+        } else {
+            first_pass = visible_material;
+            first_color = visible_color;
+        }
+
+        SetPrimitiveMaterial(buffer, first_primitive, first_primitive + primitive_count, first_pass, first_color);
+
+        if (second_pass) {
+            int second_start = buffer->m_start_primitive;
+            hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
+            int second_count = buffer->m_start_primitive - second_start;
+            if (second_count) {
+                SetPrimitiveMaterial(buffer, second_start, second_start + second_count, second_pass, second_color);
             }
         }
-        if (!is_player_pawn) { orig(); return; }
-
-        // Local player detection
-        auto* local_ctrl = entities::GetLocalPlayer();
-        if (!local_ctrl) { orig(); return; }
-
-        int local_team = local_ctrl->m_iTeamNum();
-        bool is_enemy = (team != local_team);
-
-        // Self skip: compare entity index against local controller's pawn handle
-        auto local_pawn_handle = *reinterpret_cast<uint32_t*>(reinterpret_cast<uint8_t*>(local_ctrl) + 0x90C);
-        if ((local_pawn_handle & 0x7FFF) == ent_index) { orig(); return; }
-
-        bool enabled = is_enemy ? cfg.enemy_vis_enabled : cfg.team_vis_enabled;
-        if (!enabled) { orig(); return; }
-
-        int mat_idx = is_enemy ? cfg.enemy_vis_material : cfg.team_vis_material;
-        auto* mat = is_enemy ? g_mat_enemy[mat_idx] : g_mat_team[mat_idx];
-        if (!mat) { orig(); return; }
-
-        auto& c = is_enemy ? cfg.enemy_vis_color : cfg.team_vis_color;
-        uint32_t col = PackColor(c.r, c.g, c.b, c.a);
-
-        int start = buf->m_start_primitive;
-        orig();
-        int count = buf->m_start_primitive - start;
-        if (count > 0) {
-            for (int i = start; i < start + count; ++i)
-                Override(&buf->m_out[i], mat, col);
-        }
     }
-}
+
+} // namespace features::chams

@@ -3,7 +3,6 @@
 #include "menu/render/render.hpp"
 #include "utils/utils.hpp"
 #include "core/hooks/hooks.hpp"
-#include "core/entities/entities.hpp"
 #include "core/features/features.hpp"
 
 DWORD WINAPI entry(LPVOID) {
@@ -12,7 +11,6 @@ DWORD WINAPI entry(LPVOID) {
     config::Initialize();
     features::Initialize();
     hooks::Install();
-    entities::PopulateExistingEntities();
     io::println("--- Asteria Initialized ---");
 
     while (!input::KeyDown(VK_DELETE)); // Wait for delete key to be pressed to exit

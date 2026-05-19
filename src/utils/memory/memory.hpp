@@ -4,7 +4,6 @@
 
 namespace memory {
     uintptr_t FindPattern(const std::string_view& pattern, const HMODULE module_base);
-    void** FindVTable(const char* module_name, const char* rtti_name);
 
     template <typename T = void*>
     T GetVTableMethod(uintptr_t base, size_t index) {
