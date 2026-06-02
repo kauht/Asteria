@@ -3,14 +3,13 @@
 #include <safetyhook.hpp>
 #include "../../menu/render/render.hpp"
 #include "safetyhook/easy.hpp"
-#include <signatures/signatures.hpp>
 namespace hooks {
     void Install() {
         render::GetDevice();
         original::Present = safetyhook::create_inline(vtables::pSwapChainVTable[vtables::PRESENT], render::hkPresent);
         original::ResizeBuffers = safetyhook::create_inline(vtables::pSwapChainVTable[vtables::RESIZE_BUFFERS], render::hkResizeBuffers);
 
-        original::GeneratePrimitives = safetyhook::create_inline(memory::FindPattern(sdk::sigs::scenesystem::GeneratePrimitives, modules::scenesystem), handlers::hkGeneratePrimitives);
+        original::GeneratePrimitives = safetyhook::create_inline(memory::FindPattern(sig::scenesystem::GeneratePrimitives, modules::scenesystem), handlers::hkGeneratePrimitives);
     }
 
     void Uninstall() {

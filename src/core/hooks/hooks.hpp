@@ -1,14 +1,14 @@
 #pragma once
 #include <safetyhook.hpp>
 #include "../../utils/utils.hpp"
-#include <sdk/cs2sdk.hpp>
+#include <cs2.hpp>
 
 namespace hooks {
     void Install();
     void Uninstall();
 
     namespace handlers {
-        void __fastcall hkGeneratePrimitives(void* __this, sdk::scenesystem::CSceneAnimatableObject* object, void* a3, sdk::scenesystem::c_mesh_primitive_output_buffer* render_buf);
+        void __fastcall hkGeneratePrimitives(void* __this, scenesystem::CSceneAnimatableObject* object, void* a3, scenesystem::c_mesh_primitive_output_buffer* render_buf);
     }
 
     namespace original {

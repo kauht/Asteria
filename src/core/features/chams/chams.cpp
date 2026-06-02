@@ -2,28 +2,21 @@
 #include "../../../core/hooks/hooks.hpp"
 #include "../../../utils/modules/modules.hpp"
 #include "../../../utils/memory/memory.hpp"
-#include <signatures/signatures.hpp>
-#include <sdk/offsets.hpp>
-#include <sdk/client_dll.hpp>
+#include <cs2.hpp>
 #include <format>
 
 namespace features::chams {
 
     static void DisablePVS() {
-        auto addr = memory::FindPattern("48 8D 0D ? ? ? ? 33 D2 FF 50", modules::engine2);
-        if (!addr) return;
-
-        auto displacement = *reinterpret_cast<int32_t*>(addr + 3);
-        auto pvs_manager = reinterpret_cast<void*>(addr + 7 + displacement);
-        auto set_pvs = reinterpret_cast<void(__fastcall*)(void*, bool)>((*reinterpret_cast<void***>(pvs_manager))[6]);
-
-        set_pvs(pvs_manager, false);
+        if (!modules::engine2) return;
+        auto* pvs = reinterpret_cast<ifc::engine2::CEnginePVSManager*>(reinterpret_cast<uintptr_t>(modules::engine2) + offsets::engine2::PVSManager);
+        pvs->SetPvsEnabled(false);
     }
 
     void Initialize() {
         material_system = *(void**)((uintptr_t)modules::materialsystem2 + 0x15D750);
-        CreateMaterial = (decltype(CreateMaterial))memory::FindPattern(sdk::sigs::materialsystem2::CreateMaterial, modules::materialsystem2);
-        LoadKV3 = (decltype(LoadKV3))memory::FindPattern(sdk::sigs::tier0::LoadKV3, modules::tier0);
+        CreateMaterial = (decltype(CreateMaterial))memory::FindPattern(sig::materialsystem2::CreateMaterial, modules::materialsystem2);
+        LoadKV3 = (decltype(LoadKV3))memory::FindPattern(sig::tier0::LoadKV3, modules::tier0);
         DisablePVS();
 
         for (int i = 0; i < kMaterialCount; i++) {
@@ -44,8 +37,8 @@ namespace features::chams {
             g_mat_viewmodel[i] = MakeMaterial(name, kMaterialsVM[i].kv3_vis);
         }
 
-        FindParameter = (decltype(FindParameter))memory::FindPattern(sdk::sigs::materialsystem2::FindParameter, modules::materialsystem2);
-        UpdateParameter = (decltype(UpdateParameter))memory::FindPattern(sdk::sigs::materialsystem2::UpdateParameter, modules::materialsystem2);
+        FindParameter = (decltype(FindParameter))memory::FindPattern(sig::materialsystem2::FindParameter, modules::materialsystem2);
+        UpdateParameter = (decltype(UpdateParameter))memory::FindPattern(sig::materialsystem2::UpdateParameter, modules::materialsystem2);
 
         auto& wc = config::g_config.chams;
         g_wire_hand = MakeWireMaterial("vm_hand_wire", wc.hand_wire_color.r, wc.hand_wire_color.g, wc.hand_wire_color.b, wc.hand_wire_color.a);
@@ -98,8 +91,8 @@ namespace features::chams {
 
         uint16_t entity_index = handle.GetIndex();
 
-        auto* entity = static_cast<sdk::client::C_BaseEntity*>(CGameEntitySystem::GetEntityByIndex(entity_index));
-        auto* local_controller = *reinterpret_cast<sdk::client::CCSPlayerController**>((uintptr_t)modules::client + cs2::offsets::client::LocalPlayerController_ptr);
+        auto* entity = static_cast<client::C_BaseEntity*>(CGameEntitySystem::GetEntityByIndex(entity_index));
+        auto* local_controller = *reinterpret_cast<client::CCSPlayerController**>((uintptr_t)modules::client + offsets::client::LocalPlayerController);
         if (!entity || !local_controller) {
             hooks::original::GeneratePrimitives.fastcall<void>(scene, scene_object, context, buffer);
             return;

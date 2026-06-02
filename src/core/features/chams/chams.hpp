@@ -1,9 +1,7 @@
 #pragma once
 #include "vmats.hpp"
 #include "../../../utils/config/config.hpp"
-#include <sdk/scenesystem_dll.hpp>
-#include <sdk/materialsystem2_dll.hpp>
-#include <sdk/entity_system.hpp>
+#include <cs2.hpp>
 #include <array>
 #include <format>
 
@@ -36,10 +34,10 @@ namespace features::chams {
 
     void Initialize();
     void RecolorWireframe(int which, const config::Color& color);
-    void Chams(void* scene, sdk::scenesystem::CSceneAnimatableObject* sceneObject, void* ctx, sdk::scenesystem::c_mesh_primitive_output_buffer* render_buf);
+    void Chams(void* scene, scenesystem::CSceneAnimatableObject* sceneObject, void* ctx, scenesystem::c_mesh_primitive_output_buffer* render_buf);
 
-    using namespace sdk::materialsystem2;
-    using namespace sdk::scenesystem;
+    using namespace materialsystem2;
+    using namespace scenesystem;
 
     inline constexpr uint64_t k_kv3Unk0 = 0x469806E97412167CULL;
     inline constexpr uint64_t k_kv3Unk1 = 0xE73790B53EE6F2AFULL;

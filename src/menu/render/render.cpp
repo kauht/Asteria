@@ -13,6 +13,11 @@ long long __stdcall render::WndProc_Handler( HWND hwnd, UINT msg, WPARAM wparam,
 	{
 		zui::process_wndproc_message( msg, wparam, lparam );
 
+		if (msg == WM_SETCURSOR) {
+			SetCursor( LoadCursorA( nullptr, IDC_ARROW ) );
+			return TRUE;
+		}
+
 		// @note: could move these to process_wndproc_message
 
 		if ( msg == WM_SIZE && wparam != SIZE_MINIMIZED )
@@ -107,6 +112,7 @@ void render::Initialize(IDXGISwapChain* swapChain) {
     if (!zdraw::initialize(pDevice, pDeviceContext)) return;
     if (!zui::initialize(hWnd)) return;
 
+    input::SetRelativeMouse(!globals::bMenuOpen.load());
     // create context
 
     scene.initialize(pDevice, pDeviceContext, view_width, view_height);
@@ -198,7 +204,11 @@ HRESULT WINAPI render::hkResizeBuffers(IDXGISwapChain* swapChain, UINT bufferCou
 
 LRESULT CALLBACK render::hkWndProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     input::ProcessKey(msg, wParam);
-    if (input::KeyDown(config::g_config.keybinds["toggle_menu"].key)) globals::bMenuOpen.store(!globals::bMenuOpen.load());
+    if (input::WasPressed(config::g_config.keybinds["toggle_menu"].key)) {
+        const bool open = !globals::bMenuOpen.load();
+        globals::bMenuOpen.store(open);
+        input::SetRelativeMouse(!open);
+    }
 
     if (globals::bImGuiInitialized.load() && globals::bMenuOpen.load()) {
         return WndProc_Handler(wnd, msg, wParam, lParam);
