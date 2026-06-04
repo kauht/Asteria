@@ -21,9 +21,7 @@ namespace hooks {
     namespace vtables {
         inline void** pSwapChainVTable;
 
-        enum {
-            PRESENT        = 8,
-            RESIZE_BUFFERS = 13,
-        };
+        inline constexpr int PRESENT = 8;
+        inline constexpr int RESIZE_BUFFERS = 13;
     }
 }

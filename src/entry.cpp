@@ -13,7 +13,7 @@ DWORD WINAPI entry(LPVOID) {
     hooks::Install();
     io::println("--- Asteria Initialized ---");
 
-    while (!input::KeyDown(VK_DELETE)); // Wait for delete key to be pressed to exit
+    while (!input::KeyDown(VK_DELETE)) Sleep(10);
 
     io::println("--- Asteria Shutdown ---\n\nYou may now close this window...");
     // entity shutdown

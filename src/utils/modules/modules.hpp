@@ -15,7 +15,7 @@ namespace modules {
     inline HMODULE particles;
     inline HMODULE pulse_system;
     inline HMODULE rendersystemdx11;
-    inline HMODULE resourcesyystem;
+    inline HMODULE resourcesystem;
     inline HMODULE scenesystem;
     inline HMODULE schemasystem;
     inline HMODULE server;

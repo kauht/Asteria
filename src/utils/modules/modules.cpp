@@ -48,8 +48,8 @@ namespace modules {
             io::println("Failed to get rendersystemdx11.dll module handle");
             return;
         }
-        resourcesyystem = GetModuleHandleA("resourcesystem.dll");
-        if (!resourcesyystem) {
+        resourcesystem = GetModuleHandleA("resourcesystem.dll");
+        if (!resourcesystem) {
             io::println("Failed to get resourcesystem.dll module handle");
             return;
         }
@@ -90,7 +90,7 @@ namespace modules {
         particles = {};
         pulse_system = {};
         rendersystemdx11 = {};
-        resourcesyystem = {};
+        resourcesystem = {};
         scenesystem = {};
         schemasystem = {};
         server = {};
