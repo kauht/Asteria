@@ -1,6 +1,4 @@
-#include <windows.h>
 #include "globals.hpp"
-#include "menu/render/render.hpp"
 #include "utils/utils.hpp"
 #include "core/hooks/hooks.hpp"
 #include "core/features/features.hpp"
@@ -15,10 +13,9 @@ DWORD WINAPI entry(LPVOID) {
 
     while (!input::KeyDown(VK_DELETE)) Sleep(10);
 
-    io::println("--- Asteria Shutdown ---\n\nYou may now close this window...");
-    // entity shutdown
-    features::Shutdown();
+    io::println("--- Asteria Shutdown ---");
     hooks::Uninstall();
+    features::Shutdown();
     config::Shutdown();
     modules::Shutdown();
     io::Shutdown();

@@ -7,6 +7,7 @@ using json = nlohmann::json;
 
 namespace config {
     void Initialize(const std::string& path = "config.json");
+    void Save();
     void Shutdown();
 
 
@@ -59,7 +60,7 @@ namespace config {
         Chams chams;
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams)
-        Config Load(const std::string& path = "config.json");
+        static Config Load(const std::string& path = "config.json");
         bool Save(const std::string& path = "config.json") const;
     };
 

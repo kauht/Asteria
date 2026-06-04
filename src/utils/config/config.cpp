@@ -3,13 +3,19 @@
 
 namespace config {
     Config g_config;
+    static std::string s_path = "config.json";
 
     void Initialize(const std::string& path) {
-        g_config.Load(path);
+        s_path = path;
+        g_config = Config::Load(path);
+    }
+
+    void Save() {
+        g_config.Save(s_path);
     }
 
     void Shutdown() {
-
+        // Save();
     }
 
     Config Config::Load(const std::string& path) {
