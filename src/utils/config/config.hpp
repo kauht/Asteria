@@ -44,6 +44,15 @@ namespace config {
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Chams, team_vis_enabled, team_occ_enabled, enemy_vis_enabled, enemy_occ_enabled, weapon_chams_enabled, hand_chams_enabled, enemy_vis_color, enemy_occ_color, team_vis_color, team_occ_color, hand_color, hand_wire_color, weapon_color, weapon_wire_color, enemy_vis_material, enemy_occ_material, team_vis_material, team_occ_material, hand_material, weapon_material)
     };
 
+    struct Dof {
+        bool  enabled     = false;
+        float near_blurry = 0.0f;
+        float near_crisp  = 50.0f;
+        float far_crisp   = 100.0f;
+        float far_blurry  = 200.0f;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dof, enabled, near_blurry, near_crisp, far_crisp, far_blurry)
+    };
+
     struct Keybind {
         int key = 0;        // VK_ key code
         bool enabled = true;
@@ -58,8 +67,9 @@ namespace config {
         };
 
         Chams chams;
+        Dof   dof;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams, dof)
         static Config Load(const std::string& path = "config.json");
         bool Save(const std::string& path = "config.json") const;
     };

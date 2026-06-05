@@ -10,6 +10,8 @@ namespace hooks {
         original::ResizeBuffers = safetyhook::create_inline(vtables::pSwapChainVTable[vtables::RESIZE_BUFFERS], render::hkResizeBuffers);
 
         original::GeneratePrimitives = safetyhook::create_inline(memory::FindPattern(sig::scenesystem::GeneratePrimitives, modules::scenesystem), handlers::hkGeneratePrimitives);
+        original::DrawViewPunch2 = safetyhook::create_inline(memory::FindPattern(sig::client::DrawViewPunch2, modules::client), handlers::hkDrawViewPunch2);
+        original::PostProcessQuery = safetyhook::create_inline(memory::FindPattern(sig::client::PostProcessQuery, modules::client), handlers::hkPostProcessQuery);
     }
 
     void Uninstall() {
@@ -18,5 +20,7 @@ namespace hooks {
         original::ResizeBuffers.reset();
         original::CreateMove.reset();
         original::GeneratePrimitives.reset();
+        original::DrawViewPunch2.reset();
+        original::PostProcessQuery.reset();
     }
 }

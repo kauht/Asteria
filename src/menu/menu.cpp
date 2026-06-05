@@ -33,23 +33,28 @@ namespace menu {
         dst.a = src.a / 255.f;
     }
 
-    static void TabChams() {
+    static void TabAimbot() {
+
+    }
+
+    static void TabVisuals() {
         using namespace features::chams;
         auto& chams = config::g_config.chams;
+        auto& dof   = config::g_config.dof;
 
-        static zdraw::rgba s_enemy_vis_color = NormalizedToRGBA(chams.enemy_vis_color);
-        static zdraw::rgba s_enemy_occ_color = NormalizedToRGBA(chams.enemy_occ_color);
-        static zdraw::rgba s_team_vis_color = NormalizedToRGBA(chams.team_vis_color);
-        static zdraw::rgba s_team_occ_color = NormalizedToRGBA(chams.team_occ_color);
-        static zdraw::rgba s_hand_color = NormalizedToRGBA(chams.hand_color);
-        static zdraw::rgba s_hand_wire_color = NormalizedToRGBA(chams.hand_wire_color);
-        static zdraw::rgba s_weapon_color = NormalizedToRGBA(chams.weapon_color);
-        static zdraw::rgba s_weapon_wire_color = NormalizedToRGBA(chams.weapon_wire_color);
+        static zdraw::rgba s_enemy_vis_color    = NormalizedToRGBA(chams.enemy_vis_color);
+        static zdraw::rgba s_enemy_occ_color    = NormalizedToRGBA(chams.enemy_occ_color);
+        static zdraw::rgba s_team_vis_color     = NormalizedToRGBA(chams.team_vis_color);
+        static zdraw::rgba s_team_occ_color     = NormalizedToRGBA(chams.team_occ_color);
+        static zdraw::rgba s_hand_color         = NormalizedToRGBA(chams.hand_color);
+        static zdraw::rgba s_hand_wire_color    = NormalizedToRGBA(chams.hand_wire_color);
+        static zdraw::rgba s_weapon_color       = NormalizedToRGBA(chams.weapon_color);
+        static zdraw::rgba s_weapon_wire_color  = NormalizedToRGBA(chams.weapon_wire_color);
 
         auto fw = zui::calc_item_width(1);
-        if (zui::begin_group_box("Chams", fw)) {
-            auto hw = zui::calc_item_width(2);
+        auto hw = zui::calc_item_width(2);
 
+        if (zui::begin_group_box("Chams", fw)) {
             if (zui::begin_group_box("Enemy", hw)) {
                 zui::checkbox("Visible", chams.enemy_vis_enabled);
                 if (zui::color_picker("Vis Color", s_enemy_vis_color)) NormalizeRGBA(chams.enemy_vis_color, s_enemy_vis_color);
@@ -94,6 +99,27 @@ namespace menu {
 
             zui::end_group_box();
         }
+
+        if (zui::begin_group_box("Depth of Field", hw)) {
+            zui::checkbox("Enabled", dof.enabled);
+            zui::slider_float("Near Blurry", dof.near_blurry, 0.f, 2000.f);
+            zui::slider_float("Near Crisp",  dof.near_crisp,  0.f, 2000.f);
+            zui::slider_float("Far Crisp",   dof.far_crisp,   0.f, 2000.f);
+            zui::slider_float("Far Blurry",  dof.far_blurry,  0.f, 2000.f);
+            zui::end_group_box();
+        }
+    }
+
+    static void TabInventory() {
+
+    }
+
+    static void TabMisc() {
+
+    }
+
+    static void TabSettings() {
+
     }
 
     void menu() {
@@ -106,36 +132,25 @@ namespace menu {
 
             if (zui::begin_nested_window("Nav", avail_w, 50.f)) {
                 auto btn_w = zui::calc_item_width(5);
-                if (zui::button("Aimbot", btn_w, 26.f)) tab = TAB_AIMBOT;
+                if (zui::button("Aimbot",    btn_w, 26.f)) tab = TAB_AIMBOT;
                 zui::same_line();
-                if (zui::button("Visuals", btn_w, 26.f)) tab = TAB_VISUALS;
+                if (zui::button("Visuals",   btn_w, 26.f)) tab = TAB_VISUALS;
                 zui::same_line();
                 if (zui::button("Inventory", btn_w, 26.f)) tab = TAB_INVENTORY;
                 zui::same_line();
-                if (zui::button("Misc", btn_w, 26.f)) tab = TAB_MISC;
+                if (zui::button("Misc",      btn_w, 26.f)) tab = TAB_MISC;
                 zui::same_line();
-                if (zui::button("Settings", btn_w, 26.f)) tab = TAB_SETTINGS;
+                if (zui::button("Settings",  btn_w, 26.f)) tab = TAB_SETTINGS;
                 zui::end_nested_window();
             }
 
             if (zui::begin_nested_window("Main", avail_w, avail_h - 50)) {
                 switch (tab) {
-                    case TAB_AIMBOT: {
-                        break;
-                    }
-                    case TAB_VISUALS: {
-                        TabChams();
-                        break;
-                    }
-                    case TAB_INVENTORY: {
-                        break;
-                    }
-                    case TAB_MISC: {
-                        break;
-                    }
-                    case TAB_SETTINGS: {
-                        break;
-                    }
+                    case TAB_AIMBOT:     TabAimbot();    break;
+                    case TAB_VISUALS:    TabVisuals();   break;
+                    case TAB_INVENTORY:  TabInventory(); break;
+                    case TAB_MISC:       TabMisc();      break;
+                    case TAB_SETTINGS:   TabSettings();  break;
                 }
                 zui::end_nested_window();
             }

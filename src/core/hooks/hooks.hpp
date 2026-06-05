@@ -9,6 +9,8 @@ namespace hooks {
 
     namespace handlers {
         void __fastcall hkGeneratePrimitives(void* __this, scenesystem::CSceneAnimatableObject* object, void* a3, scenesystem::c_mesh_primitive_output_buffer* render_buf);
+        float* __fastcall hkDrawViewPunch2(__int64 a1, __int64 a2, __int64 a3, float* a4, float* a5, float* a6);
+        void* __fastcall hkPostProcessQuery(void* state, void* out, unsigned int key, void* def);
     }
 
     namespace original {
@@ -16,6 +18,8 @@ namespace hooks {
         inline SafetyHookInline ResizeBuffers;
         inline SafetyHookInline CreateMove;
         inline SafetyHookInline GeneratePrimitives;
+        inline SafetyHookInline DrawViewPunch2;
+        inline SafetyHookInline PostProcessQuery;
     }
 
     namespace vtables {

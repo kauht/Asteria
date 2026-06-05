@@ -12,4 +12,4 @@
 	url = https://github.com/scros22/cs2-universal-offsets/
 [submodule "vendor/zdraw"]
 	path = vendor/zdraw
-	url = https://github.com/nul1ex/zdraw
+	url = https://github.com/kauht/zdraw

@@ -106,8 +106,28 @@
 },
 {
   "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\cs2-sdk\\include", "/Ivendor\\json\\include", "/Ivendor\\safetyhook\\include", "/Ivendor\\safetyhook\\src", "/Ivendor\\zydis\\include", "/Ivendor\\zydis\\dependencies\\zycore\\include", "/Ivendor\\zydis\\src", "/Ivendor\\zdraw\\zdraw\\zdraw", "/Ivendor\\zdraw\\zdraw\\zdraw\\external\\freetype", "/DZYDIS_STATIC_BUILD", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\features\\postfx\\postfx.cpp.obj", "src\\core\\features\\postfx\\postfx.cpp"],
+  "file": "src\\core\\features\\postfx\\postfx.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\cs2-sdk\\include", "/Ivendor\\json\\include", "/Ivendor\\safetyhook\\include", "/Ivendor\\safetyhook\\src", "/Ivendor\\zydis\\include", "/Ivendor\\zydis\\dependencies\\zycore\\include", "/Ivendor\\zydis\\src", "/Ivendor\\zdraw\\zdraw\\zdraw", "/Ivendor\\zdraw\\zdraw\\zdraw\\external\\freetype", "/DZYDIS_STATIC_BUILD", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\features\\removals\\removals.cpp.obj", "src\\core\\features\\removals\\removals.cpp"],
+  "file": "src\\core\\features\\removals\\removals.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\cs2-sdk\\include", "/Ivendor\\json\\include", "/Ivendor\\safetyhook\\include", "/Ivendor\\safetyhook\\src", "/Ivendor\\zydis\\include", "/Ivendor\\zydis\\dependencies\\zycore\\include", "/Ivendor\\zydis\\src", "/Ivendor\\zdraw\\zdraw\\zdraw", "/Ivendor\\zdraw\\zdraw\\zdraw\\external\\freetype", "/DZYDIS_STATIC_BUILD", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\hooks\\handlers\\DrawViewPunch2.cpp.obj", "src\\core\\hooks\\handlers\\DrawViewPunch2.cpp"],
+  "file": "src\\core\\hooks\\handlers\\DrawViewPunch2.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
   "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\cs2-sdk\\include", "/Ivendor\\json\\include", "/Ivendor\\safetyhook\\include", "/Ivendor\\safetyhook\\src", "/Ivendor\\zydis\\include", "/Ivendor\\zydis\\dependencies\\zycore\\include", "/Ivendor\\zydis\\src", "/Ivendor\\zdraw\\zdraw\\zdraw", "/Ivendor\\zdraw\\zdraw\\zdraw\\external\\freetype", "/DZYDIS_STATIC_BUILD", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\hooks\\handlers\\GeneratePrimitives.cpp.obj", "src\\core\\hooks\\handlers\\GeneratePrimitives.cpp"],
   "file": "src\\core\\hooks\\handlers\\GeneratePrimitives.cpp"
+},
+{
+  "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
+  "arguments": ["C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.50.35717\\bin\\HostX64\\x64\\cl.exe", "/c", "/nologo", "/MD", "/O2", "/std:c++23preview", "/Ivendor\\cs2-sdk\\include", "/Ivendor\\json\\include", "/Ivendor\\safetyhook\\include", "/Ivendor\\safetyhook\\src", "/Ivendor\\zydis\\include", "/Ivendor\\zydis\\dependencies\\zycore\\include", "/Ivendor\\zydis\\src", "/Ivendor\\zdraw\\zdraw\\zdraw", "/Ivendor\\zdraw\\zdraw\\zdraw\\external\\freetype", "/DZYDIS_STATIC_BUILD", "/EHsc", "/DNDEBUG", "/Fobuild\\.objs\\asteria\\windows\\x64\\release\\src\\core\\hooks\\handlers\\PostProcessQuery.cpp.obj", "src\\core\\hooks\\handlers\\PostProcessQuery.cpp"],
+  "file": "src\\core\\hooks\\handlers\\PostProcessQuery.cpp"
 },
 {
   "directory": "C:\\Users\\macin\\Desktop\\code\\asteria",
