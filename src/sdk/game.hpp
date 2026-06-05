@@ -5,18 +5,20 @@
 
 namespace sdk {
 
-    inline client::CCSPlayerController* LocalController() noexcept {
-        return GlobalPtr<client::CCSPlayerController>(modules::client, offsets::client::LocalPlayerController);
+    inline ifc::inputsystem::CInputSystem* InputSystem() noexcept {
+        return GetInterface<ifc::inputsystem::CInputSystem>(modules::inputsystem, "InputSystemVersion001");
+    }
+
+    inline ifc::materialsystem2::CMaterialSystem2* MaterialSystem() noexcept {
+        return GetInterface<ifc::materialsystem2::CMaterialSystem2>(modules::materialsystem2, "VMaterialSystem2_001");
     }
 
     inline ifc::engine2::CEnginePVSManager* PVSManager() noexcept {
-        return GlobalAt<ifc::engine2::CEnginePVSManager>(modules::engine2, offsets::engine2::PVSManager);
+        return GlobalAt<ifc::engine2::CEnginePVSManager>(modules::engine2, offsets::engine2::pPVSManager);
     }
 
-    inline void* MaterialSystem() noexcept {
-        if (!modules::materialsystem2) return nullptr;
-        return *reinterpret_cast<void**>(
-            iface::materialsystem2::VMaterialSystem2_001(reinterpret_cast<std::uintptr_t>(modules::materialsystem2)));
+    inline client::CCSPlayerController* LocalController() noexcept {
+        return GlobalPtr<client::CCSPlayerController>(modules::client, offsets::client::LocalPlayerController);
     }
 
 }

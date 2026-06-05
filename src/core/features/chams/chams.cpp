@@ -1,4 +1,4 @@
-#include "chams.hpp"
+﻿#include "chams.hpp"
 #include "../../../core/hooks/hooks.hpp"
 #include "../../../utils/modules/modules.hpp"
 #include "../../../utils/memory/memory.hpp"
@@ -15,8 +15,8 @@ namespace features::chams {
 
     void Initialize() {
         g_state.material_system = sdk::MaterialSystem();
-        g_state.CreateMaterial = (CreateMaterial_t)memory::FindPattern(sig::materialsystem2::CreateMaterial, modules::materialsystem2);
-        g_state.LoadKV3 = (LoadKV3_t)memory::FindPattern(sig::tier0::LoadKV3, modules::tier0);
+        g_state.CreateMaterial = (CreateMaterial_t)memory::FindPattern(pattern::materialsystem2::CreateMaterial, modules::materialsystem2);
+        g_state.LoadKV3 = (LoadKV3_t)memory::FindPattern(pattern::tier0::LoadKV3, modules::tier0);
 
         sdk::PVSManager()->SetPvsEnabled(false);
 
@@ -32,12 +32,16 @@ namespace features::chams {
             g_state.viewmodel[i] = MakeMaterial(std::format("vm_{}", m.tag).c_str(), m.kv3_vis);
         }
 
-        g_state.FindParameter = (FindParameter_t)memory::FindPattern(sig::materialsystem2::FindParameter, modules::materialsystem2);
-        g_state.UpdateParameter = (UpdateParameter_t)memory::FindPattern(sig::materialsystem2::UpdateParameter, modules::materialsystem2);
+        g_state.FindParameter = (FindParameter_t)memory::FindPattern(pattern::materialsystem2::FindParameter, modules::materialsystem2);
+        g_state.UpdateParameter = (UpdateParameter_t)memory::FindPattern(pattern::materialsystem2::UpdateParameter, modules::materialsystem2);
 
         auto& wc = config::g_config.chams;
         g_state.wire_hand = MakeWireMaterial("vm_hand_wire", wc.hand_wire_color.r, wc.hand_wire_color.g, wc.hand_wire_color.b, wc.hand_wire_color.a);
         g_state.wire_weapon = MakeWireMaterial("vm_weapon_wire", wc.weapon_wire_color.r, wc.weapon_wire_color.g, wc.weapon_wire_color.b, wc.weapon_wire_color.a);
+    }
+
+    void Shutdown() {
+        g_state = {};
     }
 
     void RecolorWireframe(int which, const config::Color& color) {

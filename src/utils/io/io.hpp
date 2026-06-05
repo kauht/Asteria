@@ -1,21 +1,34 @@
 #pragma once
 #include <windows.h>
-#include <string>
+#include <format>
 #include <source_location>
-
-#define DEBUG
+#include <string_view>
 
 namespace io {
     void Initialize();
     void Shutdown();
 
+    namespace detail {
+        void write  (std::string_view msg, const std::source_location& loc);
+        void writeln(std::string_view msg, const std::source_location& loc);
+    }
+
     struct LogLine {
-        const char* fmt;
+        std::string_view     fmt;
         std::source_location loc;
-        LogLine(const char* fmt, std::source_location loc = std::source_location::current())
-            : fmt(fmt), loc(loc) {}
+        LogLine(const char* f, std::source_location l = std::source_location::current())
+            : fmt(f), loc(l) {}
+        LogLine(std::string_view f, std::source_location l = std::source_location::current())
+            : fmt(f), loc(l) {}
     };
 
-    void print(LogLine line, ...);
-    void println(LogLine line, ...);
+    template<typename... Args>
+    void print(LogLine line, Args&&... args) {
+        detail::write(std::vformat(line.fmt, std::make_format_args(args...)), line.loc);
+    }
+
+    template<typename... Args>
+    void println(LogLine line, Args&&... args) {
+        detail::writeln(std::vformat(line.fmt, std::make_format_args(args...)), line.loc);
+    }
 }

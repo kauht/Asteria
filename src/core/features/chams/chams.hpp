@@ -33,6 +33,7 @@ namespace features::chams {
     inline constexpr const char* kMaterialNamesVM[kMaterialCountVM] = {"Flat", "Glow", "Electric", "Chrome", "Wireframe"};
 
     void Initialize();
+    void Shutdown();
     void RecolorWireframe(int which, const config::Color& color);
     void Chams(void* scene, scenesystem::CSceneAnimatableObject* sceneObject, void* ctx, scenesystem::c_mesh_primitive_output_buffer* render_buf);
 

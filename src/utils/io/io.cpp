@@ -1,6 +1,4 @@
 #include "io.hpp"
-#include <cstdio>
-#include <cstdarg>
 #include <chrono>
 
 namespace io {
@@ -11,9 +9,7 @@ namespace io {
         auto time = std::chrono::system_clock::to_time_t(now);
         std::tm tm{};
         localtime_s(&tm, &time);
-        char buf[32];
-        sprintf_s(buf, "%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
-        return std::string(buf);
+        return std::format("{:02}:{:02}:{:02}", tm.tm_hour, tm.tm_min, tm.tm_sec);
     }
 
     static const char* basename(const char* path) {
@@ -23,46 +19,24 @@ namespace io {
         return s;
     }
 
-    void print(LogLine line, ...) {
-        char msg[1024];
-        va_list args;
-        va_start(args, line);
-        vsprintf_s(msg, line.fmt, args);
-        va_end(args);
-
-        char out[1280];
-        sprintf_s(out, "[%s] [%s:%d] %s",
-            timestamp().c_str(),
-            basename(line.loc.file_name()),
-            line.loc.line(),
-            msg);
-
+    namespace detail {
+        void write(std::string_view msg, const std::source_location& loc) {
+            auto out = std::format("[{}] [{}:{}] {}", timestamp(), basename(loc.file_name()), loc.line(), msg);
 #ifdef DEBUG
-        printf("%s", out);
+            printf("%s", out.c_str());
 #endif
-        if (hLogFile)
-            WriteFile(hLogFile, out, (DWORD)strlen(out), nullptr, nullptr);
-    }
+            if (hLogFile)
+                WriteFile(hLogFile, out.data(), (DWORD)out.size(), nullptr, nullptr);
+        }
 
-    void println(LogLine line, ...) {
-        char msg[1024];
-        va_list args;
-        va_start(args, line);
-        vsprintf_s(msg, line.fmt, args);
-        va_end(args);
-
-        char out[1280];
-        sprintf_s(out, "[%s] [%s:%d] %s\n",
-            timestamp().c_str(),
-            basename(line.loc.file_name()),
-            line.loc.line(),
-            msg);
-
+        void writeln(std::string_view msg, const std::source_location& loc) {
+            auto out = std::format("[{}] [{}:{}] {}\n", timestamp(), basename(loc.file_name()), loc.line(), msg);
 #ifdef DEBUG
-        printf("%s", out);
+            printf("%s", out.c_str());
 #endif
-        if (hLogFile)
-            WriteFile(hLogFile, out, (DWORD)strlen(out), nullptr, nullptr);
+            if (hLogFile)
+                WriteFile(hLogFile, out.data(), (DWORD)out.size(), nullptr, nullptr);
+        }
     }
 
     void Initialize() {

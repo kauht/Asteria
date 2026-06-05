@@ -3,6 +3,7 @@
 #include "../io/io.hpp"
 #include "../modules/modules.hpp"
 #include "../../globals.hpp"
+#include "../../sdk/game.hpp"
 #include <cs2.hpp>
 #include <safetyhook.hpp>
 
@@ -19,7 +20,6 @@ bool input::WasPressed(int key) {
 }
 
 void input::ProcessKey(UINT msg, WPARAM wParam) {
-    // If you think there's a better way to do this then fucking do it fuck you
     switch (msg) {
         case WM_KEYDOWN: case WM_SYSKEYDOWN: key_states[static_cast<int>(wParam)] = true;  break;
         case WM_KEYUP:   case WM_SYSKEYUP:   key_states[static_cast<int>(wParam)] = false; break;
@@ -38,26 +38,15 @@ void input::ProcessKey(UINT msg, WPARAM wParam) {
 namespace {
     SafetyHookInline g_set_relative_hook{};
 
-    ifc::inputsystem::CInputSystem* InputSystem() {
-        static void* is = [] {
-            using CreateInterfaceFn = void*(__cdecl*)(const char*, int*);
-            auto ci = reinterpret_cast<CreateInterfaceFn>(GetProcAddress(modules::inputsystem, "CreateInterface"));
-            return ci("InputSystemVersion001", nullptr);
-        }();
-        return static_cast<ifc::inputsystem::CInputSystem*>(is);
-    }
-
     void* __fastcall hkSetRelativeMouseMode(void* thisptr, bool relative) {
         return g_set_relative_hook.fastcall<void*>(thisptr, globals::bMenuOpen.load() ? false : relative);
     }
 }
 
 void input::SetRelativeMouse(bool relative) {
-    auto* is = InputSystem();
-    if (!is) return;
+    auto is = sdk::InputSystem();
     if (!g_set_relative_hook) {
-        // fix later
-        if (void* target = ifc::detail::vfunc(is, &ifc::inputsystem::CInputSystem::SetRelativeMouseMode))
+        if (void* target = is->pSetRelativeMouseMode())
             g_set_relative_hook = safetyhook::create_inline(target, &hkSetRelativeMouseMode);
     }
     is->SetRelativeMouseMode(relative);

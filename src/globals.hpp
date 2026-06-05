@@ -10,7 +10,4 @@ namespace globals {
     // States
     inline std::atomic<bool> bMenuOpen = true;
     inline std::atomic<bool> bImGuiInitialized = false;
-
-
-    inline bool bTest = false;
 }

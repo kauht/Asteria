@@ -1,4 +1,4 @@
-#include "hooks.hpp"
+﻿#include "hooks.hpp"
 #include "../../utils/utils.hpp"
 #include <safetyhook.hpp>
 #include "../../menu/render/render.hpp"
@@ -9,9 +9,9 @@ namespace hooks {
         original::Present = safetyhook::create_inline(vtables::pSwapChainVTable[vtables::PRESENT], render::hkPresent);
         original::ResizeBuffers = safetyhook::create_inline(vtables::pSwapChainVTable[vtables::RESIZE_BUFFERS], render::hkResizeBuffers);
 
-        original::GeneratePrimitives = safetyhook::create_inline(memory::FindPattern(sig::scenesystem::GeneratePrimitives, modules::scenesystem), handlers::hkGeneratePrimitives);
-        original::DrawViewPunch2 = safetyhook::create_inline(memory::FindPattern(sig::client::DrawViewPunch2, modules::client), handlers::hkDrawViewPunch2);
-        original::PostProcessQuery = safetyhook::create_inline(memory::FindPattern(sig::client::PostProcessQuery, modules::client), handlers::hkPostProcessQuery);
+        original::GeneratePrimitives = safetyhook::create_inline(memory::FindPattern(pattern::scenesystem::GeneratePrimitives, modules::scenesystem), handlers::hkGeneratePrimitives);
+        original::DrawViewPunch2 = safetyhook::create_inline(memory::FindPattern(pattern::client::DrawViewPunch2, modules::client), handlers::hkDrawViewPunch2);
+        original::PostProcessQuery = safetyhook::create_inline(memory::FindPattern(pattern::client::PostProcessQuery, modules::client), handlers::hkPostProcessQuery);
     }
 
     void Uninstall() {

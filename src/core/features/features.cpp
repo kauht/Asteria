@@ -7,6 +7,6 @@ namespace features {
     }
 
     void Shutdown() {
-
+        chams::Shutdown();
     }
 }
