@@ -99,10 +99,12 @@ namespace features::chams {
         const int  entity_team = entity->m_iTeamNum();
         const bool is_local    = local->m_hPawn().GetIndex() == entity_index;
 
+        const bool is_world_weapon = name.starts_with("weapon_");
+
         Target t;
         t.is_hands  = name.contains("cs2_hudmodel_arms");
         t.is_weapon = name.contains("cs2_hudmodel_weapon");
-        t.is_player = (entity_team == 2 || entity_team == 3) && !is_local;
+        t.is_player = (entity_team == 2 || entity_team == 3) && !is_local && !is_world_weapon;
         t.is_enemy  = t.is_player && entity_team != local->m_iTeamNum();
         return t;
     }

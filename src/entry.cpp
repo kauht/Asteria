@@ -16,7 +16,6 @@ DWORD WINAPI entry(LPVOID) {
     io::println("--- Asteria Shutdown ---");
     hooks::Uninstall();
     features::Shutdown();
-    config::Shutdown();
     modules::Shutdown();
     io::Shutdown();
 

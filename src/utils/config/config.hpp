@@ -8,7 +8,6 @@ using json = nlohmann::json;
 namespace config {
     void Initialize(const std::string& path = "config.json");
     void Save();
-    void Shutdown();
 
 
     struct Color {
@@ -53,6 +52,13 @@ namespace config {
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dof, enabled, near_blurry, near_crisp, far_crisp, far_blurry)
     };
 
+    struct Wetness {
+        bool  enabled = false;
+        float density = 1.0f;
+        float speed   = 3.0f;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Wetness, enabled, density, speed)
+    };
+
     struct Keybind {
         int key = 0;        // VK_ key code
         bool enabled = true;
@@ -66,10 +72,11 @@ namespace config {
             {"toggle_menu", {VK_INSERT, true}},
         };
 
-        Chams chams;
-        Dof   dof;
+        Chams   chams;
+        Dof     dof;
+        Wetness wetness;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams, dof)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams, dof, wetness)
         static Config Load(const std::string& path = "config.json");
         bool Save(const std::string& path = "config.json") const;
     };

@@ -14,10 +14,6 @@ namespace config {
         g_config.Save(s_path);
     }
 
-    void Shutdown() {
-        // Save();
-    }
-
     Config Config::Load(const std::string& path) {
         std::ifstream f(path);
         if (!f.is_open()) return Config{};

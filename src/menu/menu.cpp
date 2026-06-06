@@ -2,6 +2,7 @@
 #include "../utils/utils.hpp"
 #include "../globals.hpp"
 #include "../core/features/chams/chams.hpp"
+#include "../core/features/world/wetness.hpp"
 #include <zui/zui.hpp>
 
 namespace menu {
@@ -39,8 +40,9 @@ namespace menu {
 
     static void TabVisuals() {
         using namespace features::chams;
-        auto& chams = config::g_config.chams;
-        auto& dof   = config::g_config.dof;
+        auto& chams    = config::g_config.chams;
+        auto& dof      = config::g_config.dof;
+        auto& wetness  = config::g_config.wetness;
 
         static zdraw::rgba s_enemy_vis_color    = NormalizedToRGBA(chams.enemy_vis_color);
         static zdraw::rgba s_enemy_occ_color    = NormalizedToRGBA(chams.enemy_occ_color);
@@ -106,6 +108,13 @@ namespace menu {
             zui::slider_float("Near Crisp",  dof.near_crisp,  0.f, 2000.f);
             zui::slider_float("Far Crisp",   dof.far_crisp,   0.f, 2000.f);
             zui::slider_float("Far Blurry",  dof.far_blurry,  0.f, 2000.f);
+            zui::end_group_box();
+        }
+        zui::same_line();
+        if (zui::begin_group_box("Wetness", hw)) {
+            zui::checkbox("Enabled", wetness.enabled);
+            zui::slider_float("Density", wetness.density, 0.f, 1.f);
+            zui::slider_float("Speed",   wetness.speed,   0.f, 20.f);
             zui::end_group_box();
         }
     }
