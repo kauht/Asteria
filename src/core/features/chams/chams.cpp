@@ -87,11 +87,12 @@ namespace features::chams {
         if (!handle.IsValid()) return std::nullopt;
 
         const uint16_t entity_index = handle.GetIndex();
-        auto* entity = static_cast<client::C_BaseEntity*>(CGameEntitySystem::GetEntityByIndex(entity_index));
+        auto* entity_system = sdk::EntitySystem();
+        auto* entity = entity_system->GetBaseEntity<client::C_BaseEntity>(entity_index);
         auto* local  = sdk::LocalController();
         if (!entity || !local) return std::nullopt;
 
-        const char* designer = CGameEntitySystem::GetDesignerName(entity_index);
+        const char* designer = entity_system->GetDesignerName(entity_index);
         if (!designer || !*designer) return std::nullopt;
         const std::string_view name = designer;
 
@@ -101,7 +102,7 @@ namespace features::chams {
         Target t;
         t.is_hands  = name.contains("cs2_hudmodel_arms");
         t.is_weapon = name.contains("cs2_hudmodel_weapon");
-        t.is_player = (entity_team == 2 || entity_team == 3) && !is_local && CGameEntitySystem::IsPlayerPawn(entity_index);
+        t.is_player = (entity_team == 2 || entity_team == 3) && !is_local;
         t.is_enemy  = t.is_player && entity_team != local->m_iTeamNum();
         return t;
     }

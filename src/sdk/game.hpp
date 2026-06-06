@@ -1,6 +1,6 @@
 #pragma once
 #include "sdk.hpp"
-#include <cs2.hpp>
+#include "entity_system.hpp"
 #include "../utils/modules/modules.hpp"
 
 namespace sdk {
@@ -19,6 +19,10 @@ namespace sdk {
 
     inline client::CCSPlayerController* LocalController() noexcept {
         return GlobalPtr<client::CCSPlayerController>(modules::client, offsets::client::LocalPlayerController);
+    }
+
+    inline client::C_CSPlayerPawn* LocalPawn() noexcept {
+        return static_cast<client::C_CSPlayerPawn*>(LocalController()->m_hPawn().Get());
     }
 
 }

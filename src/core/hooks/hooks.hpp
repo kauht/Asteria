@@ -11,15 +11,20 @@ namespace hooks {
         void __fastcall hkGeneratePrimitives(void* __this, scenesystem::CSceneAnimatableObject* object, void* a3, scenesystem::c_mesh_primitive_output_buffer* render_buf);
         float* __fastcall hkDrawViewPunch2(__int64 a1, __int64 a2, __int64 a3, float* a4, float* a5, float* a6);
         void* __fastcall hkPostProcessQuery(void* state, void* out, unsigned int key, void* def);
+        void __fastcall hkAddEntity(void* sys, void* inst, uint32_t handle);
+        void __fastcall hkRemoveEntity(void* sys, void* inst, uint32_t handle);
+        bool __fastcall hkCreateMovePrePrediction(void* input, uint32_t slot, char mouse_input);
     }
 
     namespace original {
         inline SafetyHookInline Present;
         inline SafetyHookInline ResizeBuffers;
-        inline SafetyHookInline CreateMove;
         inline SafetyHookInline GeneratePrimitives;
         inline SafetyHookInline DrawViewPunch2;
         inline SafetyHookInline PostProcessQuery;
+        inline SafetyHookInline AddEntity;
+        inline SafetyHookInline RemoveEntity;
+        inline SafetyHookInline CreateMovePrePrediction;
     }
 
     namespace vtables {
