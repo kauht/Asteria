@@ -14,8 +14,9 @@ namespace entities {
         auto* entity_system = sdk::EntitySystem();
         if (!entity_system) return Type::Unknown;
 
-        const auto name = std::string(entity_system->GetDesignerName(idx));
-        if (name.empty()) return Type::Unknown;
+        const char* raw = entity_system->GetDesignerName(idx);
+        if (!raw || !*raw) return Type::Unknown;
+        const std::string_view name = raw;
 
         if (name == "planted_c4")        return Type::PlantedC4;
         if (name.contains("projectile")) return Type::GrenadeProjectile;

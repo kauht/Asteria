@@ -1,7 +1,9 @@
 #include "../hooks.hpp"
+#include "../../features/bhop/bhop.hpp"
 
 namespace hooks::handlers {
-    bool __fastcall hkCreateMovePrePrediction(void* input, uint32_t slot, char mouse_input) {
-        return original::CreateMovePrePrediction.fastcall<bool>(input, slot, mouse_input);
+    void __fastcall hkCreateMovePrePrediction( void* pThis, int nSlot, void* pCmd ) {
+        features::bhop::Bhop(pCmd);
+        original::CreateMovePrePrediction.fastcall<void>( pThis, nSlot, pCmd );
     }
 }

@@ -124,7 +124,13 @@ namespace menu {
     }
 
     static void TabMisc() {
+        auto& bhop = config::g_config.bhop;
+        auto hw = zui::calc_item_width(2);
 
+        if (zui::begin_group_box("Movement", hw)) {
+            zui::checkbox("bhop", bhop.enabled);
+            zui::end_group_box();
+        }
     }
 
     static void TabSettings() {

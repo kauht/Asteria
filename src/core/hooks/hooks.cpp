@@ -15,7 +15,7 @@ namespace hooks {
         original::PostProcessQuery        = safetyhook::create_inline(memory::FindPattern(pattern::client::PostProcessQuery,         modules::client),      handlers::hkPostProcessQuery);
         original::AddEntity               = safetyhook::create_inline(memory::FindPattern(pattern::client::AddEntity,               modules::client),      handlers::hkAddEntity);
         original::RemoveEntity            = safetyhook::create_inline(memory::FindPattern(pattern::client::RemoveEntity,            modules::client),      handlers::hkRemoveEntity);
-        original::CreateMovePrePrediction = safetyhook::create_inline(memory::FindPattern(pattern::client::CreateMovePrePrediction, modules::client),      handlers::hkCreateMovePrePrediction);
+        original::CreateMovePrePrediction = safetyhook::create_inline(memory::FindPattern(pattern::client::CreateMovePrePrediction, modules::client), handlers::hkCreateMovePrePrediction);
         original::FrameStageNotify        = safetyhook::create_inline(memory::FindPattern(pattern::client::FrameStageNotify,        modules::client),      handlers::hkFrameStageNotify);
         original::RunPrediction           = safetyhook::create_inline(memory::FindPattern(pattern::engine2::RunPrediction,          modules::engine2),     handlers::hkRunPrediction);
         original::PostProcessQueryWriter  = safetyhook::create_inline(memory::FindPattern(pattern::client::PostProcessQueryWriter,  modules::client),      handlers::hkPostProcessQueryWriter);

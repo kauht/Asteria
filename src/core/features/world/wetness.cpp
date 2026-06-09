@@ -1,12 +1,19 @@
 #include "wetness.hpp"
-#include "../../../utils/murmur2.hpp"
 #include "../../../utils/config/config.hpp"
+#include "../../../utils/memory/memory.hpp"
+#include "../../../utils/modules/modules.hpp"
+#include <Patterns/patterns.hpp>
 #include <windows.h>
+#include <utility>
 
 namespace features::wetness {
     namespace {
-        constexpr uint32_t kWetness = murmur2::hash_a1_const("RainExposureToSkyWetness", murmur2::kSeed);
-        constexpr uint32_t kTimer   = murmur2::hash_a1_const("RainExposureLocalTimer",   murmur2::kSeed);
+        auto get_hashes() {
+            static auto GetHash = reinterpret_cast<uint32_t(__fastcall*)(const uint8_t*, int)>(memory::FindPattern(pattern::client::GetMurmur2Hash, modules::client));
+            static const uint32_t kWetness = GetHash(reinterpret_cast<const uint8_t*>("RainExposureToSkyWetness"), 0x31415926);
+            static const uint32_t kTimer = GetHash(reinterpret_cast<const uint8_t*>("RainExposureLocalTimer"), 0x31415926);
+            return std::pair<uint32_t, uint32_t>{kWetness, kTimer};
+        }
 
         ULONGLONG s_start_ms = 0;
     }
@@ -23,6 +30,8 @@ namespace features::wetness {
 
         const ULONGLONG now = GetTickCount64();
         if (s_start_ms == 0) s_start_ms = now;
+
+        const auto [kWetness, kTimer] = get_hashes();
 
         if (key == kWetness) {
             value[0] = value[1] = value[2] = value[3] = cfg.density;

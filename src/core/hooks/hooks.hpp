@@ -13,7 +13,7 @@ namespace hooks {
         void* __fastcall hkPostProcessQuery(void* state, void* out, unsigned int key, void* def);
         void __fastcall hkAddEntity(void* sys, void* inst, uint32_t handle);
         void __fastcall hkRemoveEntity(void* sys, void* inst, uint32_t handle);
-        bool __fastcall hkCreateMovePrePrediction(void* input, uint32_t slot, char mouse_input);
+        void __fastcall hkCreateMovePrePrediction(void* pThis, int nSlot, void* pCmd);
         void __fastcall hkFrameStageNotify(void* client, int stage);
         void __fastcall hkRunPrediction(void* thisptr, unsigned int reason);
         void* __fastcall hkPostProcessQueryWriter(void* attr_table, uint32_t hash, void* value);

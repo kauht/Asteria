@@ -59,6 +59,11 @@ namespace config {
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Wetness, enabled, density, speed)
     };
 
+    struct Bhop {
+        bool enabled = false;
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Bhop, enabled)
+    };
+
     struct Keybind {
         int key = 0;        // VK_ key code
         bool enabled = true;
@@ -75,8 +80,9 @@ namespace config {
         Chams   chams;
         Dof     dof;
         Wetness wetness;
+        Bhop    bhop;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams, dof, wetness)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Config, version, keybinds, chams, dof, wetness, bhop)
         static Config Load(const std::string& path = "config.json");
         bool Save(const std::string& path = "config.json") const;
     };
